@@ -33,91 +33,820 @@
         /* TRIPLE BORDER CONTAINER */
         .border-container {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border: 5px solid red;
-            padding: 10px;
-            box-sizing: border-box;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            bottom: 10px;
+            border: 3px solid #ffeb3b;
+            border-radius: 15px;
+            padding: 3px;
+            background: rgba(0, 0, 0, 0.3);
         }
 
-        /* Example UI */
-        #game-log {
+        .border-container::before {
+            content: '';
             position: absolute;
-            bottom: 10px;
-            left: 10px;
-            width: calc(100% - 20px);
-            max-height: 150px;
-            overflow-y: auto;
-            background: rgba(0,0,0,0.3);
+            top: -6px;
+            left: -6px;
+            right: -6px;
+            bottom: -6px;
+            border: 2px solid #4caf50;
+            border-radius: 20px;
+            pointer-events: none;
+        }
+
+        .border-container::after {
+            content: '';
+            position: absolute;
+            top: -12px;
+            left: -12px;
+            right: -12px;
+            bottom: -12px;
+            border: 1px solid #ff9800;
+            border-radius: 25px;
+            pointer-events: none;
+        }
+
+        /* GAME CONTAINER */
+        .game-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* HEADER */
+        .game-header {
+            text-align: center;
+            padding: 10px 0;
+            margin-bottom: 15px;
+        }
+
+        .game-title {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #ffeb3b;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            margin-bottom: 5px;
+        }
+
+        .game-subtitle {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        /* CONNECTION STATUS */
+        .connection-status {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.8rem;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #f44336;
+        }
+
+        .status-dot.connected {
+            background: #4caf50;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        /* BINGO CARD */
+        .bingo-card-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             padding: 10px;
+        }
+
+        .bingo-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .bingo-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            max-width: 350px;
+            margin: 0 auto;
+        }
+
+        .bingo-cell {
+            aspect-ratio: 1;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
             border-radius: 8px;
-            font-size: 14px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .bingo-cell:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.05);
+        }
+
+        .bingo-cell.marked {
+            background: linear-gradient(135deg, #4caf50, #2e7d32);
+            color: white;
+            border-color: #4caf50;
+        }
+
+        .bingo-cell.free {
+            background: linear-gradient(135deg, #ff9800, #f57c00);
+            color: white;
+            border-color: #ff9800;
+        }
+
+        /* GAME CONTROLS */
+        .game-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            padding: 15px;
+            flex-wrap: wrap;
+        }
+
+        .control-btn {
+            background: linear-gradient(135deg, #2196f3, #1976d2);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 120px;
+        }
+
+        .control-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .control-btn:active {
+            transform: translateY(0);
+        }
+
+        .control-btn.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        /* MESSAGES */
+        .message-container {
+            text-align: center;
+            padding: 10px;
+            min-height: 40px;
+            margin: 10px 0;
+        }
+
+        .message {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px 20px;
+            border-radius: 20px;
+            display: inline-block;
+            font-size: 1rem;
+        }
+
+        .message.error {
+            background: rgba(244, 67, 54, 0.8);
+            color: white;
+        }
+
+        .message.success {
+            background: rgba(76, 175, 80, 0.8);
+            color: white;
+        }
+
+        .message.info {
+            background: rgba(33, 150, 243, 0.8);
+            color: white;
+        }
+
+        /* NUMBER DISPLAY */
+        .number-display {
+            text-align: center;
+            padding: 15px;
+            margin: 10px 0;
+        }
+
+        .current-number {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #ffeb3b;
+            text-shadow: 0 0 10px rgba(255, 235, 59, 0.5);
+            animation: glow 1.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 10px rgba(255, 235, 59, 0.5); }
+            to { text-shadow: 0 0 20px rgba(255, 235, 59, 0.8), 0 0 30px rgba(255, 235, 59, 0.6); }
+        }
+
+        /* PLAYER INFO */
+        .player-info {
+            position: absolute;
+            top: 10px;
+            left: 15px;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* RESPONSIVE DESIGN */
+        @media (max-width: 480px) {
+            .game-title {
+                font-size: 1.5rem;
+            }
+            
+            .bingo-cell {
+                font-size: 1rem;
+            }
+            
+            .control-btn {
+                padding: 10px 20px;
+                min-width: 100px;
+                font-size: 0.9rem;
+            }
+            
+            .current-number {
+                font-size: 2.5rem;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .bingo-grid {
+                gap: 5px;
+            }
+            
+            .game-controls {
+                gap: 10px;
+            }
+            
+            .control-btn {
+                padding: 8px 16px;
+                min-width: 90px;
+            }
+        }
+
+        /* LOADING OVERLAY */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #2196f3;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            font-size: 1.2rem;
+            color: white;
+        }
+
+        /* HIDDEN */
+        .hidden {
+            display: none !important;
         }
     </style>
 </head>
 <body>
+    <!-- LOADING OVERLAY -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="loading-spinner"></div>
+        <div class="loading-text amharic-text">በመጫን ላይ...</div>
+    </div>
+
+    <!-- TRIPLE BORDER CONTAINER -->
     <div class="border-container">
-        <h1 class="amharic-text">አሰፋ ዲጂታል ቢንጎ ጨዋታ</h1>
-        <div id="game-log"></div>
+        <div class="game-container">
+            <!-- PLAYER INFO -->
+            <div class="player-info" id="playerInfo">
+                ተጫዋች: <span id="playerId">---</span>
+            </div>
+
+            <!-- CONNECTION STATUS -->
+            <div class="connection-status">
+                <div id="statusDot" class="status-dot"></div>
+                <span id="connectionStatus">ምንጭን በመጠባበቅ ላይ</span>
+            </div>
+
+            <!-- HEADER -->
+            <div class="game-header">
+                <h1 class="game-title amharic-text">አሰፋ ዲጂታል ቢንጎ</h1>
+                <div class="game-subtitle amharic-text">የኢትዮጵያ ባህላዊ ጨዋታ</div>
+            </div>
+
+            <!-- NUMBER DISPLAY -->
+            <div class="number-display">
+                <div class="amharic-text">የአሁኑ ቁጥር</div>
+                <div id="currentNumber" class="current-number">--</div>
+            </div>
+
+            <!-- MESSAGES -->
+            <div class="message-container">
+                <div id="message" class="message"></div>
+            </div>
+
+            <!-- BINGO CARD -->
+            <div class="bingo-card-container">
+                <div class="bingo-card">
+                    <div class="bingo-grid" id="bingoGrid">
+                        <!-- Bingo cells will be generated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- GAME CONTROLS -->
+            <div class="game-controls">
+                <button id="joinBtn" class="control-btn amharic-text">ተቀላቀል</button>
+                <button id="readyBtn" class="control-btn amharic-text disabled" disabled>ዝግጁ ነኝ</button>
+                <button id="bingoBtn" class="control-btn amharic-text disabled" disabled>ቢንጎ!</button>
+                <button id="newGameBtn" class="control-btn amharic-text">አዲስ ጨዋታ</button>
+            </div>
+        </div>
     </div>
 
     <script>
-        // ================================
-        // WEBSOCKET CONNECTION
-        // ================================
-        const WS_URL = "wss://ameng-gogs-asselove-84.deno.dev";
-        let socket;
+        // WebSocket Configuration
+        const WS_URL = 'wss://ameng-gogs-asselove-84.deno.dev/';
+        
+        // Game State
+        let ws = null;
+        let playerId = null;
+        let gameState = {
+            connected: false,
+            joined: false,
+            ready: false,
+            numbers: [],
+            markedCells: [],
+            currentNumber: null,
+            bingoCard: generateBingoCard()
+        };
 
-        function connectWebSocket() {
-            socket = new WebSocket(WS_URL);
+        // DOM Elements
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        const statusDot = document.getElementById('statusDot');
+        const connectionStatus = document.getElementById('connectionStatus');
+        const playerInfo = document.getElementById('playerId');
+        const currentNumber = document.getElementById('currentNumber');
+        const message = document.getElementById('message');
+        const bingoGrid = document.getElementById('bingoGrid');
+        const joinBtn = document.getElementById('joinBtn');
+        const readyBtn = document.getElementById('readyBtn');
+        const bingoBtn = document.getElementById('bingoBtn');
+        const newGameBtn = document.getElementById('newGameBtn');
 
-            socket.onopen = () => {
-                logMessage("✅ WebSocket connected");
-                // optional: send join message
-                socket.send(JSON.stringify({ type: "join", role: "player" }));
-            };
-
-            socket.onmessage = (event) => {
-                const data = JSON.parse(event.data);
-                logMessage("📩 Message from server: " + JSON.stringify(data));
-
-                // example handling: update UI
-                if(data.type === "update") {
-                    // your game UI logic here
-                }
-            };
-
-            socket.onclose = () => {
-                logMessage("❌ WebSocket disconnected, reconnecting in 2s...");
-                setTimeout(connectWebSocket, 2000); // auto reconnect
-            };
-
-            socket.onerror = (err) => {
-                console.error("⚠️ WebSocket error:", err);
-                socket.close();
-            };
+        // Initialize Game
+        function initGame() {
+            renderBingoCard();
+            setupEventListeners();
+            connectWebSocket();
         }
 
-        // send move or action to server
-        function sendMove(moveData) {
-            if(socket && socket.readyState === WebSocket.OPEN) {
-                socket.send(JSON.stringify({ type: "move", payload: moveData }));
+        // Generate Bingo Card
+        function generateBingoCard() {
+            const card = [];
+            const numbers = [];
+            
+            // Generate random numbers for B-I-N-G-O columns
+            for (let col = 0; col < 5; col++) {
+                const start = col * 15 + 1;
+                const end = start + 14;
+                const columnNumbers = [];
+                
+                while (columnNumbers.length < 5) {
+                    const num = Math.floor(Math.random() * (end - start + 1)) + start;
+                    if (!columnNumbers.includes(num)) {
+                        columnNumbers.push(num);
+                    }
+                }
+                
+                columnNumbers.sort((a, b) => a - b);
+                
+                for (let row = 0; row < 5; row++) {
+                    const index = row * 5 + col;
+                    if (row === 2 && col === 2) {
+                        card[index] = { number: 'FREE', marked: true };
+                    } else {
+                        card[index] = { 
+                            number: columnNumbers[row], 
+                            marked: false 
+                        };
+                    }
+                }
+            }
+            
+            return card;
+        }
+
+        // Render Bingo Card
+        function renderBingoCard() {
+            bingoGrid.innerHTML = '';
+            
+            // Add BINGO header
+            const letters = ['ቢ', 'ኢ', 'ኔ', 'ጂ', 'ኦ'];
+            letters.forEach(letter => {
+                const headerCell = document.createElement('div');
+                headerCell.className = 'bingo-cell amharic-text';
+                headerCell.textContent = letter;
+                headerCell.style.fontWeight = 'bold';
+                headerCell.style.color = '#ffeb3b';
+                bingoGrid.appendChild(headerCell);
+            });
+            
+            // Add number cells
+            gameState.bingoCard.forEach((cell, index) => {
+                const cellElement = document.createElement('div');
+                cellElement.className = 'bingo-cell';
+                if (cell.number === 'FREE') {
+                    cellElement.classList.add('free', 'amharic-text');
+                    cellElement.textContent = 'ነፃ';
+                } else {
+                    cellElement.textContent = cell.number;
+                    if (cell.marked) {
+                        cellElement.classList.add('marked');
+                    }
+                }
+                
+                cellElement.addEventListener('click', () => {
+                    if (cell.number !== 'FREE' && !cell.marked && gameState.joined) {
+                        toggleCell(index);
+                    }
+                });
+                
+                bingoGrid.appendChild(cellElement);
+            });
+        }
+
+        // Toggle Cell Mark
+        function toggleCell(index) {
+            gameState.bingoCard[index].marked = !gameState.bingoCard[index].marked;
+            renderBingoCard();
+            
+            // Send mark update to server
+            if (ws && gameState.connected) {
+                ws.send(JSON.stringify({
+                    type: 'cell_toggle',
+                    cellIndex: index,
+                    marked: gameState.bingoCard[index].marked
+                }));
+            }
+            
+            checkBingo();
+        }
+
+        // Check for Bingo
+        function checkBingo() {
+            const rows = [];
+            const cols = [];
+            const diagonals = [[], []];
+            
+            for (let i = 0; i < 5; i++) {
+                // Check rows
+                const row = [];
+                for (let j = 0; j < 5; j++) {
+                    row.push(gameState.bingoCard[i * 5 + j]);
+                }
+                rows.push(row);
+                
+                // Check columns
+                const col = [];
+                for (let j = 0; j < 5; j++) {
+                    col.push(gameState.bingoCard[j * 5 + i]);
+                }
+                cols.push(col);
+                
+                // Check diagonals
+                diagonals[0].push(gameState.bingoCard[i * 5 + i]);
+                diagonals[1].push(gameState.bingoCard[i * 5 + (4 - i)]);
+            }
+            
+            // Check all possibilities
+            const allLines = [...rows, ...cols, ...diagonals];
+            
+            for (const line of allLines) {
+                if (line.every(cell => cell.marked)) {
+                    bingoBtn.disabled = false;
+                    bingoBtn.classList.remove('disabled');
+                    showMessage('ቢንጎ ተሰራ! ቢንጎ ቁልፍን ይጫኑ!', 'success');
+                    return true;
+                }
+            }
+            
+            bingoBtn.disabled = true;
+            bingoBtn.classList.add('disabled');
+            return false;
+        }
+
+        // WebSocket Connection
+        function connectWebSocket() {
+            try {
+                ws = new WebSocket(WS_URL);
+                
+                ws.onopen = () => {
+                    gameState.connected = true;
+                    updateConnectionStatus(true);
+                    showMessage('ከሰርቨሩ ጋር ተገናኝቷል', 'success');
+                    loadingOverlay.classList.add('hidden');
+                    
+                    // Generate player ID if not exists
+                    if (!playerId) {
+                        playerId = 'player_' + Math.random().toString(36).substr(2, 9);
+                        playerInfo.textContent = playerId;
+                        localStorage.setItem('bingo_player_id', playerId);
+                    }
+                };
+                
+                ws.onmessage = (event) => {
+                    try {
+                        const data = JSON.parse(event.data);
+                        handleServerMessage(data);
+                    } catch (e) {
+                        console.error('Error parsing server message:', e);
+                    }
+                };
+                
+                ws.onclose = () => {
+                    gameState.connected = false;
+                    updateConnectionStatus(false);
+                    showMessage('ከሰርቨሩ ጋር ያለው ግንኙነት ተቋርጧል. እንደገና በማገናኘት ላይ...', 'error');
+                    
+                    // Attempt reconnection after 5 seconds
+                    setTimeout(connectWebSocket, 5000);
+                };
+                
+                ws.onerror = (error) => {
+                    console.error('WebSocket error:', error);
+                    showMessage('የግንኙነት ስህተት', 'error');
+                };
+                
+            } catch (error) {
+                console.error('Failed to connect:', error);
+                showMessage('ማገናኘት አልተቻለም', 'error');
+                loadingOverlay.classList.remove('hidden');
             }
         }
 
-        // simple logger to div
-        function logMessage(msg) {
-            const log = document.getElementById("game-log");
-            const p = document.createElement("p");
-            p.textContent = msg;
-            log.appendChild(p);
-            log.scrollTop = log.scrollHeight;
+        // Handle Server Messages
+        function handleServerMessage(data) {
+            switch (data.type) {
+                case 'welcome':
+                    showMessage(data.message || 'እንኳን ደህና መጡ!', 'success');
+                    break;
+                    
+                case 'game_state':
+                    updateGameState(data.state);
+                    break;
+                    
+                case 'number_called':
+                    gameState.currentNumber = data.number;
+                    currentNumber.textContent = data.number;
+                    showMessage(`ቁጥር ${data.number} ተጠርቷል!`, 'info');
+                    
+                    // Auto-mark if number exists on card
+                    gameState.bingoCard.forEach((cell, index) => {
+                        if (cell.number === data.number && !cell.marked) {
+                            gameState.bingoCard[index].marked = true;
+                        }
+                    });
+                    renderBingoCard();
+                    checkBingo();
+                    break;
+                    
+                case 'player_joined':
+                    gameState.joined = true;
+                    joinBtn.disabled = true;
+                    joinBtn.classList.add('disabled');
+                    readyBtn.disabled = false;
+                    readyBtn.classList.remove('disabled');
+                    showMessage(data.message || 'ወደ ጨዋታው ተቀላቀላችሁ', 'success');
+                    break;
+                    
+                case 'player_ready':
+                    gameState.ready = true;
+                    readyBtn.disabled = true;
+                    readyBtn.classList.add('disabled');
+                    showMessage('ዝግጁ ነዎት! ጨዋታው ሊጀመር ነው...', 'info');
+                    break;
+                    
+                case 'game_start':
+                    showMessage('ጨዋታው ጀመረ! መልካም ዕድል!', 'success');
+                    break;
+                    
+                case 'bingo_claimed':
+                    if (data.winner === playerId) {
+                        showMessage('እንኳን ደስ ያለህ! ቢንጎ አረገህ! 🎉', 'success');
+                    } else {
+                        showMessage(`ተጫዋች ${data.winner} ቢንጎ አረገ!`, 'info');
+                    }
+                    break;
+                    
+                case 'error':
+                    showMessage(data.message || 'ስህተት ተከስቷል', 'error');
+                    break;
+            }
         }
 
-        // connect when page loads
-        connectWebSocket();
+        // Update Game State
+        function updateGameState(state) {
+            if (state.numbers) gameState.numbers = state.numbers;
+            if (state.currentNumber) {
+                gameState.currentNumber = state.currentNumber;
+                currentNumber.textContent = state.currentNumber;
+            }
+            if (state.players) {
+                // Update player list if needed
+            }
+        }
+
+        // Update Connection Status
+        function updateConnectionStatus(connected) {
+            if (connected) {
+                statusDot.classList.add('connected');
+                connectionStatus.textContent = 'የተገናኘ';
+            } else {
+                statusDot.classList.remove('connected');
+                connectionStatus.textContent = 'የተሰናከለ';
+            }
+        }
+
+        // Show Message
+        function showMessage(text, type = 'info') {
+            message.textContent = text;
+            message.className = 'message';
+            message.classList.add(type);
+            
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+                if (message.textContent === text) {
+                    message.textContent = '';
+                    message.className = 'message';
+                }
+            }, 5000);
+        }
+
+        // Event Listeners
+        function setupEventListeners() {
+            // Join Game
+            joinBtn.addEventListener('click', () => {
+                if (ws && gameState.connected) {
+                    ws.send(JSON.stringify({
+                        type: 'join',
+                        playerId: playerId
+                    }));
+                } else {
+                    showMessage('አሁንም አልተገናኘም', 'error');
+                }
+            });
+
+            // Ready Button
+            readyBtn.addEventListener('click', () => {
+                if (ws && gameState.connected && gameState.joined) {
+                    ws.send(JSON.stringify({
+                        type: 'ready',
+                        playerId: playerId
+                    }));
+                }
+            });
+
+            // Bingo Button
+            bingoBtn.addEventListener('click', () => {
+                if (ws && gameState.connected && gameState.joined) {
+                    if (checkBingo()) {
+                        ws.send(JSON.stringify({
+                            type: 'bingo',
+                            playerId: playerId,
+                            card: gameState.bingoCard
+                        }));
+                        bingoBtn.disabled = true;
+                        bingoBtn.classList.add('disabled');
+                    } else {
+                        showMessage('ቢንጎ አልሰራህም!', 'error');
+                    }
+                }
+            });
+
+            // New Game
+            newGameBtn.addEventListener('click', () => {
+                if (ws && gameState.connected) {
+                    ws.send(JSON.stringify({
+                        type: 'new_game'
+                    }));
+                    
+                    // Reset local state
+                    gameState.bingoCard = generateBingoCard();
+                    gameState.currentNumber = null;
+                    gameState.markedCells = [];
+                    currentNumber.textContent = '--';
+                    renderBingoCard();
+                    
+                    joinBtn.disabled = false;
+                    joinBtn.classList.remove('disabled');
+                    readyBtn.disabled = true;
+                    readyBtn.classList.add('disabled');
+                    bingoBtn.disabled = true;
+                    bingoBtn.classList.add('disabled');
+                    
+                    showMessage('አዲስ ጨዋታ ተጠይቋል', 'info');
+                }
+            });
+        }
+
+        // Check for saved player ID
+        function loadPlayerId() {
+            const savedId = localStorage.getItem('bingo_player_id');
+            if (savedId) {
+                playerId = savedId;
+                playerInfo.textContent = playerId;
+            }
+        }
+
+        // Initialize when page loads
+        window.addEventListener('DOMContentLoaded', () => {
+            loadPlayerId();
+            initGame();
+            
+            // Hide loading after 3 seconds max
+            setTimeout(() => {
+                loadingOverlay.classList.add('hidden');
+            }, 3000);
+        });
+
+        // Handle page visibility change
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                // Page is hidden
+                if (ws) {
+                    ws.send(JSON.stringify({
+                        type: 'player_away',
+                        playerId: playerId
+                    }));
+                }
+            } else {
+                // Page is visible again
+                if (ws && ws.readyState === WebSocket.OPEN) {
+                    ws.send(JSON.stringify({
+                        type: 'player_back',
+                        playerId: playerId
+                    }));
+                }
+            }
+        });
+
+        // Prevent accidental refresh
+        window.addEventListener('beforeunload', (e) => {
+            if (gameState.joined) {
+                e.preventDefault();
+                e.returnValue = 'ጨዋታውን መውጣት እየሞከሩ ነው. እርግጠኛ ነዎት?';
+            }
+        });
     </script>
 </body>
 </html>
