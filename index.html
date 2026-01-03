@@ -1,0 +1,3065 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>አሰፋ ዲጂታል ቢንጎ ጨዋታ</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Ethiopic:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* MOBILE FIRST DESIGN - OPTIMIZED */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Times New Roman', 'Noto Sans Ethiopic', sans-serif;
+            background: linear-gradient(135deg, #0d47a1 0%, #1a237e 100%);
+            color: white;
+            touch-action: manipulation;
+        }
+
+        .amharic-text {
+            font-family: 'Noto Sans Ethiopic', 'Times New Roman', sans-serif;
+        }
+
+        /* TRIPLE BORDER CONTAINER */
+        .border-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding: 5px;
+            background: linear-gradient(45deg, #28a745 0%, #ffd700 33%, #dc3545 66%, #28a745 100%);
+            animation: borderGlow 3s infinite alternate;
+        }
+
+        .main-container {
+            width: 100%;
+            height: 100%;
+            background: #0d47a1;
+            overflow: hidden;
+            position: relative;
+            border-radius: 8px;
+        }
+
+        /* SINGLE PAGE LAYOUT */
+        .page-container {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: flex;
+            flex-direction: column;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            overflow: hidden;
+        }
+
+        .page-container.active {
+            transform: translateX(0);
+        }
+
+        /* PAGE BORDERS */
+        .page-border {
+            position: absolute;
+            pointer-events: none;
+            border-radius: 8px;
+        }
+
+        .page-border.green {
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border: 2px solid #28a745;
+            animation: greenPulse 3s infinite;
+        }
+
+        .page-border.yellow {
+            top: 3px;
+            left: 3px;
+            right: 3px;
+            bottom: 3px;
+            border: 2px solid #ffd700;
+            animation: yellowPulse 3s infinite;
+        }
+
+        .page-border.red {
+            top: 6px;
+            left: 6px;
+            right: 6px;
+            bottom: 6px;
+            border: 2px solid #dc3545;
+            animation: redPulse 3s infinite;
+        }
+
+        /* PAGE CONTENT */
+        .page-content {
+            flex: 1;
+            padding: 10px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* FIXED CONTROLS - IMPROVED POSITIONING */
+        .fixed-controls {
+            position: fixed;
+            bottom: 10px;
+            left: 10px;
+            right: 10px;
+            background: rgba(13, 71, 161, 0.95);
+            border: 2px solid #ffd700;
+            border-radius: 10px;
+            padding: 8px;
+            z-index: 100;
+            display: flex;
+            gap: 6px;
+            height: 55px;
+            align-items: center;
+        }
+
+        /* HELP BUTTON */
+        .help-circle-btn {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: #17a2b8;
+            color: white;
+            border: 2px solid #ffd700;
+            font-size: 20px;
+            font-weight: bold;
+            z-index: 1000;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* REGISTRATION TOP BAR */
+        .registration-top-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 5px;
+            margin-bottom: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid #ffd700;
+            border-radius: 10px;
+            height: 60px;
+        }
+
+        .registration-title {
+            color: #ffd700;
+            font-weight: bold;
+            font-size: 16px;
+            text-align: center;
+            flex: 1;
+        }
+
+        .top-bar-btn {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            border: 2px solid #ffd700;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .win-btn {
+            background: #ffd700;
+            color: #0d47a1;
+        }
+
+        .members-btn {
+            background: #28a745;
+            color: white;
+        }
+
+        /* HELP CONTENT */
+        .help-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            border: 2px solid #ffd700;
+            margin-bottom: 10px;
+        }
+
+        .help-section {
+            margin-bottom: 15px;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            border: 1px solid #28a745;
+        }
+
+        .help-title {
+            color: #ffd700;
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .help-text {
+            color: white;
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 6px;
+        }
+
+        /* HELP NAVIGATION */
+        .help-nav {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            border: 1px solid #ffd700;
+            flex-wrap: wrap;
+        }
+
+        .help-nav-btn {
+            flex: 1;
+            min-width: 120px;
+            padding: 8px 5px;
+            background: rgba(255, 215, 0, 0.2);
+            border: 1px solid #ffd700;
+            border-radius: 5px;
+            color: white;
+            font-size: 12px;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .help-nav-btn.active {
+            background: #ffd700;
+            color: #0d47a1;
+            font-weight: bold;
+        }
+
+        .help-tab-content {
+            display: none;
+        }
+
+        .help-tab-content.active {
+            display: block;
+        }
+
+        /* MODALS */
+        .members-modal, .potential-win-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 2000;
+            display: none;
+            overflow-y: auto;
+            padding: 15px;
+        }
+
+        .modal-content {
+            background: #0d47a1;
+            border: 3px solid #28a745;
+            border-radius: 15px;
+            padding: 15px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .modal-header {
+            color: #ffd700;
+            font-size: 18px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #ffd700;
+        }
+
+        .members-table, .winning-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .members-table th, .winning-table th {
+            background: #28a745;
+            color: white;
+            padding: 8px;
+            text-align: left;
+            font-size: 12px;
+            position: sticky;
+            top: 0;
+            border: 1px solid #ffd700;
+        }
+
+        .members-table td, .winning-table td {
+            padding: 6px;
+            border: 1px solid #ffd700;
+            font-size: 11px;
+        }
+
+        .member-row:nth-child(even) {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .member-name {
+            font-weight: bold;
+            color: #ffd700;
+        }
+
+        .member-paid {
+            color: #28a745;
+            font-weight: bold;
+        }
+
+        .member-not-paid {
+            color: #dc3545;
+        }
+
+        .win-amount {
+            color: #28a745;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .current-stake-row {
+            background: rgba(255, 215, 0, 0.2) !important;
+            font-weight: bold;
+        }
+
+        /* BUTTONS */
+        .control-btn {
+            height: 40px;
+            border-radius: 8px;
+            border: 2px solid #000;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            padding: 0 10px;
+            flex: 1;
+            transition: all 0.2s;
+            text-transform: uppercase;
+            min-width: 0;
+        }
+
+        .control-btn:active {
+            transform: scale(0.95);
+        }
+
+        .btn-secondary {
+            background: #ffd700;
+            color: #0d47a1;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-info {
+            background: #17a2b8;
+            color: white;
+        }
+
+        /* PAGE HEADERS */
+        .page-header {
+            color: #ffd700;
+            font-weight: bold;
+            font-size: 18px;
+            text-align: center;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 2px solid #ffd700;
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        /* WELCOME PAGE - REDESIGNED */
+        .welcome-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .game-title {
+            font-size: 22px;
+            color: #ffd700;
+            text-align: center;
+            margin-bottom: 10px;
+            font-weight: bold;
+            line-height: 1.4;
+        }
+
+        .developer-text {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .start-btn-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: #28a745;
+            border: 3px solid #ffd700;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 20px auto;
+            animation: pulse 2s infinite;
+        }
+
+        /* BOARD SELECTION */
+        .board-selection-container {
+            border: 3px solid #ffd700;
+            border-radius: 12px;
+            padding: 10px;
+            margin: 5px;
+            height: calc(100vh - 150px);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .board-type-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            gap: 8px;
+            flex: 1;
+            margin: 0;
+            padding: 5px;
+        }
+
+        .board-type-card {
+            background: rgba(0, 0, 0, 0.2);
+            border: 2px solid #ffd700;
+            border-radius: 10px;
+            padding: 6px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 0;
+            overflow: hidden;
+        }
+
+        .board-type-card.selected {
+            background: rgba(255, 215, 0, 0.3);
+            border-color: #28a745;
+            transform: scale(0.98);
+            box-shadow: 0 0 15px rgba(40, 167, 69, 0.5);
+        }
+
+        .board-type-icon {
+            font-size: 18px;
+            margin-bottom: 4px;
+        }
+
+        .board-type-title {
+            color: #ffd700;
+            font-size: 11px;
+            font-weight: bold;
+            margin-bottom: 2px;
+            line-height: 1.2;
+        }
+
+        .board-type-desc {
+            font-size: 8px;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.1;
+        }
+
+        /* REGISTRATION FORM */
+        .registration-form {
+            border: 2px solid #ffd700;
+            border-radius: 12px;
+            padding: 15px;
+            margin: 5px;
+            height: calc(100vh - 210px);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-scroll {
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #ffd700;
+            font-size: 14px;
+        }
+
+        .form-control {
+            width: 100%;
+            height: 40px;
+            padding: 0 10px;
+            border: 2px solid #000;
+            border-radius: 8px;
+            font-size: 14px;
+            background: white;
+            color: #333;
+            font-weight: bold;
+        }
+
+        select.form-control {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 14px;
+            padding-right: 30px;
+        }
+
+        /* PAYMENT SECTION */
+        .payment-section {
+            background: rgba(0, 0, 0, 0.2);
+            border: 2px solid #28a745;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 12px;
+        }
+
+        .payment-select {
+            width: 100%;
+            height: 40px;
+            border: 2px solid #000;
+            border-radius: 8px;
+            background: white;
+            color: #0d47a1;
+            font-size: 14px;
+            font-weight: bold;
+            padding: 0 10px;
+        }
+
+        /* FINANCE PAGE */
+        .finance-container {
+            border: 2px solid #28a745;
+            border-radius: 12px;
+            padding: 15px;
+            margin: 5px;
+            height: calc(100vh - 150px);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .finance-form {
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+
+        /* GAME BOARD CONTAINER - IMPROVED POSITIONING */
+        .game-board-container {
+            position: absolute;
+            top: 70px;
+            left: 10px;
+            right: 10px;
+            bottom: 130px;
+            border: 3px solid #ffd700;
+            border-radius: 12px;
+            overflow: hidden;
+            background: rgba(0, 0, 0, 0.25);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 5px;
+        }
+
+        #gameBoard {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        /* BINGO BOARD LAYOUTS */
+        .board-75-wrapper, .board-50-wrapper, .board-pattern-wrapper {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            height: 100%;
+            max-width: 100%;
+            max-height: 100%;
+        }
+
+        .bingo-labels, .board-pattern-labels {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 2px;
+            margin-bottom: 2px;
+            padding: 2px;
+            width: 100%;
+            height: 12%;
+        }
+
+        .bingo-label, .board-pattern-label {
+            background: #ffd700;
+            color: #0d47a1;
+            border: 2px solid #000;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+            width: 100%;
+            height: 100%;
+        }
+
+        .board-75, .board-50, .board-pattern {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            grid-template-rows: repeat(5, 1fr);
+            gap: 2px;
+            width: 100%;
+            height: 88%;
+            padding: 2px;
+        }
+
+        /* 90-BALL BOARD */
+        .board-90-wrapper {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            height: 100%;
+            max-width: 100%;
+            max-height: 100%;
+            overflow: hidden;
+        }
+
+        .board-90-labels {
+            display: grid;
+            grid-template-columns: repeat(9, 1fr);
+            gap: 1px;
+            margin-bottom: 1px;
+            padding: 1px;
+            width: 100%;
+            height: 10%;
+        }
+
+        .board-90-label {
+            background: #ffd700;
+            color: #0d47a1;
+            border: 2px solid #000;
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 12px;
+            width: 100%;
+            height: 100%;
+        }
+
+        .board-90 {
+            display: grid;
+            grid-template-columns: repeat(9, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            gap: 1px;
+            width: 100%;
+            height: 90%;
+            padding: 1px;
+        }
+
+        /* 30-BALL BOARD */
+        .board-30-wrapper {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            height: 100%;
+            max-width: 100%;
+            max-height: 100%;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .board-30-labels {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 3px;
+            margin-bottom: 3px;
+            padding: 3px;
+            width: 90%;
+            height: 15%;
+        }
+
+        .board-30-label {
+            background: #ffd700;
+            color: #0d47a1;
+            border: 2px solid #000;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+            width: 100%;
+            height: 100%;
+        }
+
+        .board-30 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            gap: 4px;
+            width: 90%;
+            height: 85%;
+            max-width: 90%;
+            max-height: 85%;
+            padding: 5px;
+        }
+
+        /* COVERALL BOARD */
+        .board-coverall-wrapper {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            height: 100%;
+            max-width: 100%;
+            max-height: 100%;
+            overflow: hidden;
+        }
+
+        .board-coverall-labels {
+            display: grid;
+            grid-template-columns: repeat(9, 1fr);
+            gap: 1px;
+            margin-bottom: 1px;
+            padding: 1px;
+            width: 100%;
+            height: 8%;
+        }
+
+        .board-coverall-label {
+            background: #ffd700;
+            color: #0d47a1;
+            border: 2px solid #000;
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 10px;
+            width: 100%;
+            height: 100%;
+        }
+
+        .board-coverall {
+            display: grid;
+            grid-template-columns: repeat(9, 1fr);
+            grid-template-rows: repeat(5, 1fr);
+            gap: 1px;
+            width: 100%;
+            height: 92%;
+            padding: 1px;
+        }
+
+        /* BOARD CELLS */
+        .board-cell {
+            background: white;
+            color: #333;
+            border: 2px solid #000;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            user-select: none;
+            min-height: 0;
+            min-width: 0;
+            font-family: 'Times New Roman', 'Noto Sans Ethiopic', sans-serif;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .board-90 .board-cell {
+            font-size: 11px;
+        }
+
+        .board-30 .board-cell {
+            font-size: 14px;
+        }
+
+        .board-coverall .board-cell {
+            font-size: 10px;
+        }
+
+        .board-cell.marked {
+            background: #dc3545;
+            color: white;
+            transform: scale(0.95);
+        }
+
+        .board-cell.pattern-cell {
+            background: #ffd700;
+            color: #0d47a1;
+        }
+
+        /* CENTER CELL */
+        .center-cell {
+            background: #ff6b6b;
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+            animation: pulse 2s infinite;
+        }
+
+        .center-cell.winner-ready {
+            background: #28a745;
+            animation: pulseFast 0.5s infinite;
+            font-size: 16px;
+            box-shadow: 0 0 20px #28a745;
+            transform: scale(1.1);
+        }
+
+        .center-cell.winner-claimed {
+            background: #17a2b8;
+            animation: none;
+            box-shadow: 0 0 15px #17a2b8;
+        }
+
+        .board-cell.blank-cell {
+            background: #6c757d;
+            color: #ccc;
+            cursor: default;
+        }
+
+        /* WIN INDICATOR */
+        .winner-indicator {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            width: 15px;
+            height: 15px;
+            background: #28a745;
+            color: white;
+            border-radius: 50%;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: bounce 1s infinite;
+        }
+
+        /* GAME HEADER */
+        .game-header {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            height: 45px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid #ffd700;
+            border-radius: 8px;
+            padding: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 101;
+        }
+
+        .game-title-bar {
+            color: #ffd700;
+            font-weight: bold;
+            font-size: 16px;
+            text-align: center;
+        }
+
+        /* CIRCULAR CALL BUTTON */
+        .circular-call-container {
+            position: absolute;
+            bottom: 70px;
+            left: 10px;
+            right: 10px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            z-index: 102;
+        }
+
+        .circular-call-btn {
+            width: 60px;
+            height: 60px;
+            min-width: 60px;
+            border-radius: 50%;
+            border: 3px solid #000;
+            background: #28a745;
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .circular-call-btn.calling {
+            background: #dc3545;
+            animation: pulseFast 1s infinite;
+        }
+
+        #currentNumberDisplay {
+            font-size: 22px;
+            font-weight: bold;
+            text-align: center;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* CALLED NUMBERS BAR */
+        .called-numbers-bar {
+            flex: 1;
+            height: 50px;
+            background: rgba(0, 0, 0, 0.95);
+            border: 2px solid #ffd700;
+            border-radius: 8px;
+            padding: 0 10px;
+            display: flex;
+            align-items: center;
+            overflow-x: auto;
+            white-space: nowrap;
+            font-size: 16px;
+            font-weight: bold;
+            color: #ffd700;
+        }
+
+        .called-number {
+            margin-right: 8px;
+            padding: 5px 8px;
+            background: rgba(255, 215, 0, 0.2);
+            border-radius: 4px;
+            animation: slideIn 0.3s;
+            min-width: 55px;
+            text-align: center;
+            font-family: 'Times New Roman', 'Noto Sans Ethiopic', sans-serif;
+        }
+
+        .called-number:first-child {
+            background: rgba(40, 167, 69, 0.3);
+            border: 1px solid #28a745;
+        }
+
+        /* GAME CONTROLS */
+        .game-controls {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            right: 10px;
+            display: flex;
+            gap: 6px;
+        }
+
+        /* WINNER NOTIFICATION */
+        .winner-notification {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.95);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            font-size: 24px;
+            font-weight: bold;
+            z-index: 1000;
+            text-align: center;
+            border: 5px solid #ffd700;
+            width: 90%;
+            max-width: 350px;
+            display: none;
+            animation: slideUp 0.4s;
+        }
+
+        /* NOTIFICATION */
+        .notification {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.95);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #ffd700;
+            z-index: 2001;
+            text-align: center;
+            max-width: 300px;
+            display: none;
+        }
+
+        /* ANIMATIONS */
+        @keyframes borderGlow {
+            0% { opacity: 0.8; }
+            100% { opacity: 1; }
+        }
+
+        @keyframes greenPulse {
+            0%, 100% { border-color: #28a745; }
+            50% { border-color: #20c997; }
+        }
+
+        @keyframes yellowPulse {
+            0%, 100% { border-color: #ffd700; }
+            50% { border-color: #ffc107; }
+        }
+
+        @keyframes redPulse {
+            0%, 100% { border-color: #dc3545; }
+            50% { border-color: #ff6b6b; }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes pulseFast {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -40%);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%);
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* SCROLLBAR */
+        ::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #ffd700;
+            border-radius: 3px;
+        }
+
+        /* RESPONSIVE ADJUSTMENTS */
+        @media (max-width: 320px) {
+            .board-type-grid {
+                gap: 5px;
+                padding: 3px;
+            }
+            
+            .board-type-card {
+                padding: 5px;
+            }
+            
+            .board-type-icon {
+                font-size: 16px;
+            }
+            
+            .board-type-title {
+                font-size: 10px;
+            }
+            
+            .board-type-desc {
+                font-size: 8px;
+            }
+            
+            .fixed-controls {
+                padding: 6px;
+                gap: 4px;
+                height: 50px;
+            }
+            
+            .control-btn {
+                height: 38px;
+                font-size: 12px;
+            }
+            
+            .top-bar-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 18px;
+            }
+            
+            .registration-form {
+                height: calc(100vh - 200px);
+            }
+            
+            .circular-call-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 18px;
+            }
+            
+            #currentNumberDisplay {
+                font-size: 18px;
+            }
+            
+            .called-numbers-bar {
+                height: 45px;
+                font-size: 14px;
+                padding: 0 8px;
+            }
+            
+            .called-number {
+                font-size: 12px;
+                min-width: 50px;
+                padding: 4px 6px;
+            }
+            
+            .board-cell {
+                font-size: 10px;
+            }
+        }
+
+        @media (max-height: 600px) {
+            .game-board-container {
+                top: 50px;
+                bottom: 110px;
+            }
+            
+            .circular-call-container {
+                bottom: 55px;
+            }
+            
+            .board-selection-container,
+            .registration-form,
+            .finance-container {
+                height: calc(100vh - 140px);
+            }
+            
+            .registration-form {
+                height: calc(100vh - 190px);
+            }
+            
+            .board-cell {
+                font-size: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Audio Elements -->
+    <audio id="callAudio" preload="auto">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-bell-notification-933.mp3" type="audio/mpeg">
+    </audio>
+    
+    <audio id="winAudio" preload="auto">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-winning-chimes-2015.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Triple Border Container -->
+    <div class="border-container">
+        <div class="main-container">
+            <!-- Color Borders -->
+            <div class="page-border green"></div>
+            <div class="page-border yellow"></div>
+            <div class="page-border red"></div>
+
+            <!-- Page 0: Welcome -->
+            <div class="page-container active" id="page0">
+                <button class="help-circle-btn" onclick="showPage(5)">?</button>
+                
+                <div class="page-content">
+                    <div class="welcome-content">
+                        <div class="game-title amharic-text">አሰፋ ዲጂታል ቢንጎ ጨዋታ</div>
+                        <div style="font-size: 14px; color: #ffd700; margin-bottom: 30px; text-align: center;">
+                            Assefa Gashaye Birhanie Digital Bingo Game (AGBDBG)
+                        </div>
+                        <button class="start-btn-circle" onclick="showPage(1)">
+                            <div style="font-size: 24px;">🎮</div>
+                        </button>
+                        <div class="developer-text amharic-text">አሰፋ ጋሻዬ ብርሃንነህ</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Page 1: Board Selection -->
+            <div class="page-container" id="page1">
+                <div class="page-content">
+                    <div class="page-header amharic-text">የቦርድ ዓይነት ይምረጡ</div>
+                    <div class="board-selection-container">
+                        <div class="board-type-grid" id="boardTypeGrid"></div>
+                    </div>
+                </div>
+                
+                <div class="fixed-controls">
+                    <button class="control-btn btn-secondary" onclick="showPage(0)">ተመለስ</button>
+                    <button class="control-btn btn-success" id="nextBtn">ቀጥል</button>
+                </div>
+            </div>
+
+            <!-- Page 2: Registration -->
+            <div class="page-container" id="page2">
+                <div class="page-content">
+                    <!-- Registration Top Bar -->
+                    <div class="registration-top-bar">
+                        <button class="top-bar-btn win-btn" onclick="showPotentialWin()">🏆</button>
+                        <div class="registration-title amharic-text">ምዝገባ</div>
+                        <button class="top-bar-btn members-btn" onclick="showMembers()">👥</button>
+                    </div>
+                    
+                    <div class="registration-form">
+                        <div class="form-scroll">
+                            <div class="form-group">
+                                <label for="playerName" class="amharic-text">ስም</label>
+                                <input type="text" id="playerName" class="form-control" placeholder="ሙሉ ስም">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="playerPhone" class="amharic-text">ስልክ</label>
+                                <input type="tel" id="playerPhone" class="form-control" placeholder="0918203416">
+                            </div>
+                            
+                            <div class="payment-section">
+                                <select id="paymentAmount" class="payment-select" onchange="processPayment()">
+                                    <option value="">ክፍያ መጠን ይምረጡ</option>
+                                    <option value="25">25 ብር</option>
+                                    <option value="50">50 ብር</option>
+                                    <option value="100">100 ብር</option>
+                                    <option value="200">200 ብር</option>
+                                    <option value="500">500 ብር</option>
+                                    <option value="1000">1000 ብር</option>
+                                    <option value="2000">2000 ብር</option>
+                                    <option value="5000">5000 ብር</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="playerStake" class="amharic-text">ውርርድ መጠን</label>
+                                <select id="playerStake" class="form-control" onchange="updatePotentialWin()">
+                                    <option value="">ይምረጡ</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="boardSelect" class="amharic-text">የቦርድ ቁጥር</label>
+                                <select id="boardSelect" class="form-control">
+                                    <option value="">1-100</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="fixed-controls">
+                    <button class="control-btn btn-secondary" onclick="showPage(1)">ተመለስ</button>
+                    <button class="control-btn btn-success" id="confirmBtn">ጀምር</button>
+                </div>
+            </div>
+
+            <!-- Page 3: Game Board -->
+            <div class="page-container" id="page3">
+                <div class="game-header">
+                    <div class="game-title-bar amharic-text" id="gameHeader"></div>
+                </div>
+                
+                <div class="game-board-container">
+                    <div id="gameBoard"></div>
+                </div>
+                
+                <!-- Circular Call Button -->
+                <div class="circular-call-container">
+                    <button class="circular-call-btn" id="circularCallBtn">
+                        <div id="currentNumberDisplay"></div>
+                    </button>
+                    <div class="called-numbers-bar" id="calledNumbersBar">
+                        <!-- Numbers will be added here -->
+                    </div>
+                </div>
+                
+                <!-- Game Controls -->
+                <div class="game-controls">
+                    <button class="control-btn btn-secondary" onclick="showPage(2)">ተመለስ</button>
+                    <button class="control-btn btn-info" onclick="showPage(4)">ፋይናንስ</button>
+                    <button class="control-btn btn-success" onclick="announceWin()" id="announceBtn">አሸናፊ ናለሁ!</button>
+                </div>
+            </div>
+
+            <!-- Page 4: Finance -->
+            <div class="page-container" id="page4">
+                <div class="page-content">
+                    <div class="page-header amharic-text">ፋይናንስ</div>
+                    
+                    <div class="finance-container">
+                        <div class="finance-form">
+                            <div class="form-group">
+                                <label class="amharic-text">ጠቅላላ ክፍያ</label>
+                                <input type="text" id="totalPayment" class="form-control" readonly value="0 ብር">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="amharic-text">ጠቅላላ ሽልማት</label>
+                                <input type="text" id="totalWon" class="form-control" readonly value="0 ብር">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="amharic-text">አሁን ያለው</label>
+                                <input type="text" id="currentBalance" class="form-control" readonly value="0 ብር">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="withdrawAccount" class="amharic-text">የአካውንት ቁጥር</label>
+                                <input type="text" id="withdrawAccount" class="form-control" placeholder="1000062264911">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="withdrawAmount" class="amharic-text">ለመውጣት</label>
+                                <input type="text" id="withdrawAmount" class="form-control" readonly value="0 ብር">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="fixed-controls">
+                    <button class="control-btn btn-secondary" onclick="showPage(3)">ተመለስ</button>
+                    <button class="control-btn btn-success" onclick="processWithdrawal()">አውጣ</button>
+                </div>
+            </div>
+
+            <!-- Page 5: Detailed Help Information -->
+            <div class="page-container" id="page5">
+                <div class="page-content">
+                    <div class="page-header amharic-text">እርዳታ / Help</div>
+                    
+                    <!-- Help Navigation -->
+                    <div class="help-nav">
+                        <button class="help-nav-btn amharic-text active" onclick="showHelpTab('general')">አጠቃላይ</button>
+                        <button class="help-nav-btn amharic-text" onclick="showHelpTab('rules')">ደንቦች</button>
+                        <button class="help-nav-btn amharic-text" onclick="showHelpTab('75ball')">75-ቢንጎ</button>
+                        <button class="help-nav-btn amharic-text" onclick="showHelpTab('90ball')">90-ቢንጎ</button>
+                        <button class="help-nav-btn amharic-text" onclick="showHelpTab('30ball')">30-ቢንጎ</button>
+                        <button class="help-nav-btn amharic-text" onclick="showHelpTab('50ball')">50-ቢንጎ</button>
+                        <button class="help-nav-btn amharic-text" onclick="showHelpTab('pattern')">ንድፍ ቢንጎ</button>
+                        <button class="help-nav-btn amharic-text" onclick="showHelpTab('coverall')">ሙሉ ቤት</button>
+                        <button class="help-nav-btn amharic-text" onclick="showHelpTab('winning')">የማሸነፍ ሂደት</button>
+                        <button class="help-nav-btn amharic-text" onclick="showHelpTab('payment')">ክፍያ ስርዓት</button>
+                    </div>
+                    
+                    <div class="help-content">
+                        <!-- General Tab -->
+                        <div class="help-tab-content active" id="help-general">
+                            <div class="help-section">
+                                <div class="help-title amharic-text">ቢንጎ ምንድን ነው? / What is Bingo?</div>
+                                <div class="help-text amharic-text">
+                                    ቢንጎ የአጋጣሚ ቁጥሮችን የሚጠቀም ጨዋታ ነው። ቁጥሮች በዘፈቀደ ይጠራሉ፣ ተጫዋቾች ደግሞ በመሳቸው ሰንጠረዥ ላይ ተጠርተው ያዩትን ምልክት ያደርጋሉ። አንድ ንድፍ ሙሉ ሲሆን "ቢንጎ" በማለት ይጠራሉ።
+                                </div>
+                                <div class="help-text">
+                                    Bingo is a game of chance where numbers are randomly drawn and players mark them on their cards. The first to complete a pattern calls "Bingo" and wins.
+                                </div>
+                            </div>
+                            
+                            <div class="help-section">
+                                <div class="help-title amharic-text">የጨዋታ አወቃቀር / Game Structure</div>
+                                <div class="help-text amharic-text">
+                                    1. የጨዋታ ገጽ 6: የተለያዩ ቦርድ ዓይነቶች<br>
+                                    2. ምዝገባ ገጽ: የተጫዋች መረጃ እና ክፍያ<br>
+                                    3. የጨዋታ ቦርድ: የቁጥር ምልክት እና አሸናፊነት<br>
+                                    4. ፋይናንስ ገጽ: ሚዛን እና የማውጣት ሂደት<br>
+                                    5. እርዳታ ገጽ: ዝርዝር መመሪያ በአማርኛ እና እንግሊዝኛ
+                                </div>
+                                <div class="help-text">
+                                    1. Game Page 6: Different board types<br>
+                                    2. Registration Page: Player info and payment<br>
+                                    3. Game Board: Number marking and winning<br>
+                                    4. Finance Page: Balance and withdrawal<br>
+                                    5. Help Page: Detailed instructions in Amharic and English
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Rules Tab -->
+                        <div class="help-tab-content" id="help-rules">
+                            <div class="help-section">
+                                <div class="help-title amharic-text">አጠቃላይ ደንቦች / General Rules</div>
+                                <div class="help-text amharic-text">
+                                    1. እያንዳንዱ ተጫዋች የቢንጎ ሰንጠረዥ ይገዛል<br>
+                                    2. ቁጥሮች በዘፈቀደ ይጠራሉ (ሁለ 7 ሰከንድ)<br>
+                                    3. የተጠራው ቁጥር በሰንጠረዥህ ላይ ካለ ምልክት አድርግ<br>
+                                    4. ንድፍ ሙሉ ከሆነ "አሸናፊ ናለሁ!" ቁልፉን ይንኩ<br>
+                                    5. ሽልማት ይቀበላሉ
+                                </div>
+                                <div class="help-text">
+                                    1. Each player buys a bingo card<br>
+                                    2. Numbers are randomly called (every 7 seconds)<br>
+                                    3. Mark called numbers on your card<br>
+                                    4. Click "I'm Winner!" button when pattern completes<br>
+                                    5. Receive your prize
+                                </div>
+                            </div>
+                            
+                            <div class="help-section">
+                                <div class="help-title amharic-text">የቁጥር ጥሪ አመጣጥ / Calling Logic</div>
+                                <div class="help-text amharic-text">
+                                    • ቁጥሮች በራስ-ሰር ይጠራሉ (ሁለ 7 ሰከንድ)<br>
+                                    • ሠንጠረዡ በላይኛው ክብ ቁልፍ ላይ ይታያል<br>
+                                    • ቁጥሩ ከክብ ቁልፍ ወደ አራት ማዕዘን አሞሌ ይገናኛል<br>
+                                    • ቁጥሮች ከቀኝ ወደ ግራ ይንቀሳቀሳሉ<br>
+                                    • ከ8 ቁጥሮች በላይ ሲሆኑ የጥንታዊው ተወግዷል
+                                </div>
+                                <div class="help-text">
+                                    • Numbers auto-call every 7 seconds<br>
+                                    • Current number appears on circular button<br>
+                                    • Number moves from circular button to bar<br>
+                                    • Numbers scroll right to left<br>
+                                    • Oldest numbers disappear after 8 calls
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 75-Ball Tab -->
+                        <div class="help-tab-content" id="help-75ball">
+                            <div class="help-section">
+                                <div class="help-title amharic-text">75-ቢንጎ / 75-Ball Bingo</div>
+                                <div class="help-text amharic-text">
+                                    <strong>የጨዋታ ስርዓት:</strong> 5×5 ፍርግርግ (BINGO ፊደሎች)<br>
+                                    <strong>ቁጥር ክልል:</strong> 1-75<br>
+                                    <strong>የትርጉም ንድፎች:</strong><br>
+                                    • ረድፍ - 5 ቁጥሮች በአንድ ረድፍ<br>
+                                    • አምድ - 5 ቁጥሮች በአንድ አምድ<br>
+                                    • ዲያግናል - 5 ቁጥሮች በዲያግናል<br>
+                                    • አራት ማእዘኖች - 4 ማእዘኖች ምልክት ያድርጉ<br>
+                                    • ሙሉ ቤት - ሁሉንም ቁጥሮች ምልክት ያድርጉ<br>
+                                    <strong>መሃል ሕዋስ:</strong> ነፃ ቦታ - በማሸነፍ ጊዜ ብቻ ይንኩ
+                                </div>
+                                <div class="help-text">
+                                    <strong>Game System:</strong> 5×5 grid (BINGO letters)<br>
+                                    <strong>Number Range:</strong> 1-75<br>
+                                    <strong>Winning Patterns:</strong><br>
+                                    • Row - 5 numbers in one row<br>
+                                    • Column - 5 numbers in one column<br>
+                                    • Diagonal - 5 numbers diagonally<br>
+                                    • Four Corners - Mark all 4 corners<br>
+                                    • Full House - Mark all numbers<br>
+                                    <strong>Center Cell:</strong> Free space - Click only when winning
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 90-Ball Tab -->
+                        <div class="help-tab-content" id="help-90ball">
+                            <div class="help-section">
+                                <div class="help-title amharic-text">90-ቢንጎ / 90-Ball Bingo</div>
+                                <div class="help-text amharic-text">
+                                    <strong>የጨዋታ ስርዓት:</strong> 9×3 ፍርግርግ<br>
+                                    <strong>ቁጥር ክልል:</strong> 1-90<br>
+                                    <strong>የትርጉም ንድፎች:</strong><br>
+                                    • አንድ ረድፍ - 5 ቁጥሮች በአንድ ረድፍ<br>
+                                    • ሁለት ረድፍ - 10 ቁጥሮች በሁለት ረድፍ<br>
+                                    • ሙሉ ቤት - 15 ቁጥሮች ሁሉም<br>
+                                    <strong>መሃል ሕዋስ:</strong> በመጫወት ወቅት ቁጥር፣ በማሸነፍ ጊዜ አሸናፊ ቁልፍ
+                                </div>
+                                <div class="help-text">
+                                    <strong>Game System:</strong> 9×3 grid<br>
+                                    <strong>Number Range:</strong> 1-90<br>
+                                    <strong>Winning Patterns:</strong><br>
+                                    • One Line - 5 numbers in one row<br>
+                                    • Two Lines - 10 numbers in two rows<br>
+                                    • Full House - All 15 numbers<br>
+                                    <strong>Center Cell:</strong> Number during play, winner key when winning
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 30-Ball Tab -->
+                        <div class="help-tab-content" id="help-30ball">
+                            <div class="help-section">
+                                <div class="help-title amharic-text">30-ቢንጎ / 30-Ball Bingo</div>
+                                <div class="help-text amharic-text">
+                                    <strong>የጨዋታ ስርዓት:</strong> 3×3 ፍርግርግ<br>
+                                    <strong>ቁጥር ክልል:</strong> 1-30<br>
+                                    <strong>የትርጉም ንድፍ:</strong><br>
+                                    • ሙሉ ቤት - ሁሉንም 9 ቁጥሮች ምልክት ያድርጉ<br>
+                                    <strong>መሃል ሕዋስ:</strong> በመጫወት ወቅት ቁጥር፣ በማሸነፍ ጊዜ አሸናፊ ቁልፍ
+                                </div>
+                                <div class="help-text">
+                                    <strong>Game System:</strong> 3×3 grid<br>
+                                    <strong>Number Range:</strong> 1-30<br>
+                                    <strong>Winning Pattern:</strong><br>
+                                    • Full House - Mark all 9 numbers<br>
+                                    <strong>Center Cell:</strong> Number during play, winner key when winning
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 50-Ball Tab -->
+                        <div class="help-tab-content" id="help-50ball">
+                            <div class="help-section">
+                                <div class="help-title amharic-text">50-ቢንጎ / 50-Ball Bingo</div>
+                                <div class="help-text amharic-text">
+                                    <strong>የጨዋታ ስርዓት:</strong> 5×5 ፍርግርግ<br>
+                                    <strong>ቁጥር ክልል:</strong> 1-50<br>
+                                    <strong>የትርጉም ንድፎች:</strong><br>
+                                    • ረድፍ - 5 ቁጥሮች በአንድ ረድፍ<br>
+                                    • አምድ - 5 ቁጥሮች በአንድ አምድ<br>
+                                    • ዲያግናል - 5 ቁጥሮች በዲያግናል<br>
+                                    • አራት ማእዘኖች - 4 ማእዘኖች ምልክት ያድርጉ<br>
+                                    <strong>መሃል ሕዋስ:</strong> በመጫወት ወቅት ቁጥር፣ በማሸነፍ ጊዜ አሸናፊ ቁልፍ
+                                </div>
+                                <div class="help-text">
+                                    <strong>Game System:</strong> 5×5 grid<br>
+                                    <strong>Number Range:</strong> 1-50<br>
+                                    <strong>Winning Patterns:</strong><br>
+                                    • Row - 5 numbers in one row<br>
+                                    • Column - 5 numbers in one column<br>
+                                    • Diagonal - 5 numbers diagonally<br>
+                                    • Four Corners - Mark all 4 corners<br>
+                                    <strong>Center Cell:</strong> Number during play, winner key when winning
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Pattern Bingo Tab -->
+                        <div class="help-tab-content" id="help-pattern">
+                            <div class="help-section">
+                                <div class="help-title amharic-text">ንድፍ ቢንጎ / Pattern Bingo</div>
+                                <div class="help-text amharic-text">
+                                    <strong>የጨዋታ ስርዓት:</strong> 5×5 ፍርግርግ<br>
+                                    <strong>ቁጥር ክልል:</strong> 1-75<br>
+                                    <strong>የትርጉም ንድፎች:</strong><br>
+                                    • X ንድፍ - X ቅርጽ ያለው ንድፍ<br>
+                                    • አውራ ቀለበት - ውጫዊ ክበብ ንድፍ<br>
+                                    • ማህተም - 4 ካሬዎች ንድፍ<br>
+                                    • ዲያምንድ - ዲያምንድ ቅርጽ ያለው ንድፍ<br>
+                                    <strong>መሃል ሕዋስ:</strong> ነፃ ቦታ - በማሸነፍ ጊዜ ብቻ ይንኩ
+                                </div>
+                                <div class="help-text">
+                                    <strong>Game System:</strong> 5×5 grid<br>
+                                    <strong>Number Range:</strong> 1-75<br>
+                                    <strong>Winning Patterns:</strong><br>
+                                    • X Pattern - X-shaped pattern<br>
+                                    • Frame - Outer frame pattern<br>
+                                    • Postage Stamp - 4 squares pattern<br>
+                                    • Small Diamond - Diamond-shaped pattern<br>
+                                    <strong>Center Cell:</strong> Free space - Click only when winning
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Coverall Tab -->
+                        <div class="help-tab-content" id="help-coverall">
+                            <div class="help-section">
+                                <div class="help-title amharic-text">ሙሉ ቤት / Coverall Bingo</div>
+                                <div class="help-text amharic-text">
+                                    <strong>የጨዋታ ስርዓት:</strong> 9×5 ፍርግርግ<br>
+                                    <strong>ቁጥር ክልል:</strong> 1-90 (45 ቁጥሮች ብቻ)<br>
+                                    <strong>የትርጉም ንድፍ:</strong><br>
+                                    • ሙሉ ቦርድ - ሁሉንም 45 ቁጥሮች ምልክት ያድርጉ<br>
+                                    <strong>መሃል ሕዋስ:</strong> በመጫወት ወቅት ቁጥር፣ በማሸነፍ ጊዜ አሸናፊ ቁልፍ
+                                </div>
+                                <div class="help-text">
+                                    <strong>Game System:</strong> 9×5 grid<br>
+                                    <strong>Number Range:</strong> 1-90 (only 45 numbers)<br>
+                                    <strong>Winning Pattern:</strong><br>
+                                    • Full Board - Mark all 45 numbers<br>
+                                    <strong>Center Cell:</strong> Number during play, winner key when winning
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Winning Process Tab -->
+                        <div class="help-tab-content" id="help-winning">
+                            <div class="help-section">
+                                <div class="help-title amharic-text">የማሸነፍ ሂደት / Winning Process</div>
+                                <div class="help-text amharic-text">
+                                    1. ቁጥሮችን ምልክት ያድርጉ<br>
+                                    2. ንድፍ ሙሉ ሲሆን "አሸናፊ ናለሁ!" ቁልፉን ይንኩ<br>
+                                    3. የማሸነፍ ማሳወቂያ ይታያል<br>
+                                    4. ሽልማት በፋይናንስ ገጽ ላይ ይጨምራል<br>
+                                    5. ሽልማት በአካውንት ማውጣት ይችላሉ
+                                </div>
+                                <div class="help-text">
+                                    1. Mark numbers on your card<br>
+                                    2. Click "I'm Winner!" button when pattern completes<br>
+                                    3. Winner notification appears<br>
+                                    4. Prize added to finance page<br>
+                                    5. Withdraw prize to your account
+                                </div>
+                            </div>
+                            
+                            <div class="help-section">
+                                <div class="help-title amharic-text">የማሸነፍ አይነቶች / Winning Types</div>
+                                <div class="help-text amharic-text">
+                                    • ረድፍ - 5 ቁጥሮች በአንድ ረድፍ<br>
+                                    • አምድ - 5 ቁጥሮች በአንድ አምድ<br>
+                                    • ዲያግናል - 5 ቁጥሮች በዲያግናል<br>
+                                    • አራት ማእዘኖች - 4 ማእዘኖች<br>
+                                    • ሙሉ ቤት - ሁሉም ቁጥሮች<br>
+                                    • X ንድፍ - X ቅርጽ<br>
+                                    • አውራ ቀለበት - ውጫዊ ክበብ<br>
+                                    • ሙሉ ቦርድ - ሁሉም 45 ቁጥሮች
+                                </div>
+                                <div class="help-text">
+                                    • Row - 5 numbers in one row<br>
+                                    • Column - 5 numbers in one column<br>
+                                    • Diagonal - 5 numbers diagonally<br>
+                                    • Four Corners - 4 corners<br>
+                                    • Full House - All numbers<br>
+                                    • X Pattern - X shape<br>
+                                    • Frame - Outer frame<br>
+                                    • Full Board - All 45 numbers
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Payment System Tab -->
+                        <div class="help-tab-content" id="help-payment">
+                            <div class="help-section">
+                                <div class="help-title amharic-text">የክፍያ ስርዓት / Payment System</div>
+                                <div class="help-text amharic-text">
+                                    <strong>የክፍያ አማራጮች:</strong><br>
+                                    • 25 ብር - መሰረታዊ ክፍያ<br>
+                                    • 50 ብር - መካከለኛ ክፍያ<br>
+                                    • 100 ብር - መደበኛ ክፍያ<br>
+                                    • 200 ብር - ከፍተኛ ክፍያ<br>
+                                    • 500 ብር - ብርቅ ክፍያ<br>
+                                    • 1000 ብር - ልዩ ክፍያ<br>
+                                    • 2000 ብር - ከፍተኛ ልዩ ክፍያ<br>
+                                    • 5000 ብር - በጣም ከፍተኛ<br>
+                                    <strong>ማሳሰቢያ:</strong> 3% አገልግሎት ክፍያ ይቀንሳል
+                                </div>
+                                <div class="help-text">
+                                    <strong>Payment Options:</strong><br>
+                                    • 25 Birr - Basic payment<br>
+                                    • 50 Birr - Medium payment<br>
+                                    • 100 Birr - Regular payment<br>
+                                    • 200 Birr - High payment<br>
+                                    • 500 Birr - Premium payment<br>
+                                    • 1000 Birr - Special payment<br>
+                                    • 2000 Birr - High special payment<br>
+                                    • 5000 Birr - Very high<br>
+                                    <strong>Note:</strong> 3% service charge is deducted
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="fixed-controls">
+                    <button class="control-btn btn-success" onclick="showPage(0)">ተመለስ</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Members Modal -->
+    <div class="members-modal" id="membersModal">
+        <div class="modal-content">
+            <div class="modal-header amharic-text">ተጫዋቾች (90)</div>
+            
+            <table class="members-table">
+                <thead>
+                    <tr>
+                        <th class="amharic-text">ተ.ቁ.</th>
+                        <th class="amharic-text">ስም</th>
+                        <th class="amharic-text">ስልክ</th>
+                        <th class="amharic-text">ክፍያ</th>
+                        <th class="amharic-text">ውርርድ</th>
+                        <th class="amharic-text">ሚዛን</th>
+                    </tr>
+                </thead>
+                <tbody id="membersList">
+                    <!-- Members will be added here -->
+                </tbody>
+            </table>
+            
+            <div class="fixed-controls" style="position: relative; margin-top: 15px; background: transparent; border: none;">
+                <button class="control-btn btn-success" onclick="closeModal('membersModal')">እሺ</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Potential Win Modal -->
+    <div class="potential-win-modal" id="potentialWinModal">
+        <div class="modal-content">
+            <div class="modal-header amharic-text">የማሸነፍ እድል</div>
+            
+            <table class="winning-table">
+                <thead>
+                    <tr>
+                        <th class="amharic-text">ውርርድ መጠን</th>
+                        <th class="amharic-text">ሽልማት</th>
+                    </tr>
+                </thead>
+                <tbody id="winningTableBody">
+                    <!-- Winning amounts will be added here -->
+                </tbody>
+            </table>
+            
+            <div style="margin-top: 15px; padding: 10px; background: rgba(255, 215, 0, 0.1); border-radius: 8px; border: 1px solid #ffd700;">
+                <div class="amharic-text" style="text-align: center; font-size: 14px; color: #28a745; margin-top: 5px; font-weight: bold;">
+                    ሊሸነፍ የሚችል ሽልማት: <span id="currentWinDisplay">0</span> ብር
+                </div>
+                <div class="amharic-text" style="text-align: center; font-size: 11px; color: #ffd700; margin-top: 5px;">
+                    ማሳሰቢያ: 3% አገልግሎት ክፍያ ይቀንሳል
+                </div>
+            </div>
+            
+            <div class="fixed-controls" style="position: relative; margin-top: 15px; background: transparent; border: none;">
+                <button class="control-btn btn-success" onclick="closeModal('potentialWinModal')">እሺ</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Modal -->
+    <div class="notification" id="notification">
+        <div id="notificationText" class="amharic-text"></div>
+        <div class="fixed-controls" style="position: relative; margin-top: 15px; background: transparent; border: none;">
+            <button class="control-btn btn-secondary" onclick="hideNotification()">እሺ</button>
+            <button class="control-btn btn-success" id="continueBtn" onclick="continueWithIncomplete()">ቀጥል</button>
+        </div>
+    </div>
+
+    <!-- Winner Popup -->
+    <div class="winner-notification" id="winnerNotification">
+        <div style="font-size: 32px; margin-bottom: 15px;">🎉 ቢንጎ! 🎉</div>
+        <div class="winner-name amharic-text" id="winnerName"></div>
+        <div class="winning-pattern amharic-text" id="winPattern"></div>
+        <div class="win-amount amharic-text" id="displayWinAmount">0 ብር</div>
+        <div style="margin: 15px 0; color: #ffd700;" class="amharic-text">አረጋግጧል ✓</div>
+        <div class="fixed-controls" style="position: relative; bottom: 0; left: 0; right: 0; margin-top: 20px; background: transparent; border: none;">
+            <button class="control-btn btn-success" onclick="continueGame()">ቀጥር</button>
+            <button class="control-btn btn-info" onclick="showPage(4)">አውጣ</button>
+        </div>
+    </div>
+
+    <script>
+        // WebSocket Connection
+        let ws = null;
+        let playerId = null;
+        let gameRoom = null;
+        
+        // Game State - Optimized
+        const gameState = {
+            gameType: null,
+            payment: 0,
+            paymentAmount: 25,
+            stake: 25,
+            totalWon: 0,
+            boardId: 1,
+            calledNumbers: [],
+            markedNumbers: new Set(),
+            gameActive: false,
+            isCalling: true,
+            callInterval: null,
+            playerName: '',
+            playerPhone: '',
+            totalWithdrawn: 0,
+            members: [],
+            totalMembers: 90,
+            calledNumbersDisplay: [],
+            maxDisplayNumbers: 8,
+            currentNumber: null,
+            winningPatterns: {
+                '75ball': ['row', 'column', 'diagonal', 'four-corners', 'full-house'],
+                '90ball': ['one-line', 'two-lines', 'full-house'],
+                '30ball': ['full-house'],
+                '50ball': ['row', 'column', 'diagonal', 'four-corners', 'full-house'],
+                'pattern': ['x-pattern', 'frame', 'postage-stamp', 'small-diamond'],
+                'coverall': ['full-board']
+            },
+            winConditions: {
+                'row': 'ረድፍ',
+                'column': 'አምድ',
+                'diagonal': 'ዲያግናል',
+                'four-corners': 'አራት ማእዘኖች',
+                'full-house': 'ሙሉ ቤት',
+                'one-line': 'አንድ ረድፍ',
+                'two-lines': 'ሁለት ረድፍ',
+                'x-pattern': 'X ንድፍ',
+                'frame': 'አውራ ቀለበት',
+                'postage-stamp': 'ማህተም',
+                'small-diamond': 'ዲያምንድ',
+                'full-board': 'ሙሉ ቦርድ'
+            }
+        };
+
+        // Board Types
+        const boardTypes = [
+            { id: '75ball', name: '75-ቢንጎ', icon: '🎯', desc: '5×5 ከBINGO', range: 75, columns: 5 },
+            { id: '90ball', name: '90-ቢንጎ', icon: '🇬🇧', desc: '9×3 ፈጣን', range: 90, columns: 9 },
+            { id: '30ball', name: '30-ቢንጎ', icon: '⚡', desc: '3×3 ፍጥነት', range: 30, columns: 3 },
+            { id: '50ball', name: '50-ቢንጎ', icon: '🎲', desc: '5×5 ከBINGO', range: 50, columns: 5 },
+            { id: 'pattern', name: 'ንድፍ ቢንጎ', icon: '✨', desc: 'ተጠቀም ንድፍ', range: 75, columns: 5 },
+            { id: 'coverall', name: 'ሙሉ ቤት', icon: '🏆', desc: 'ሁሉንም ምልክት ያድርጉ', range: 90, columns: 9 }
+        ];
+
+        // WebSocket Functions
+        function connectWebSocket() {
+            const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const host = window.location.hostname;
+            const port = window.location.port ? `:${window.location.port}` : '';
+            const wsUrl = `${protocol}//${host}${port}/ws`;
+            
+            ws = new WebSocket(wsUrl);
+            
+            ws.onopen = () => {
+                console.log('WebSocket connected');
+                showNotification('ከመስመር ተገናኝተዋል', false);
+            };
+            
+            ws.onmessage = (event) => {
+                const message = JSON.parse(event.data);
+                handleWebSocketMessage(message);
+            };
+            
+            ws.onclose = () => {
+                console.log('WebSocket disconnected');
+                showNotification('ከመስመር ተዘግቷል፣ እንደገና በማገናኘት ላይ...', false);
+                setTimeout(connectWebSocket, 3000);
+            };
+            
+            ws.onerror = (error) => {
+                console.error('WebSocket error:', error);
+                showNotification('የመስመር ስህተት', false);
+            };
+        }
+
+        function handleWebSocketMessage(message) {
+            switch (message.type) {
+                case 'player_connected':
+                    playerId = message.playerId;
+                    gameRoom = message.roomId;
+                    break;
+                    
+                case 'number_called':
+                    handleNumberCalled(message.number, message.displayText);
+                    break;
+                    
+                case 'player_joined':
+                    updatePlayerList(message.players);
+                    break;
+                    
+                case 'player_left':
+                    updatePlayerList(message.players);
+                    break;
+                    
+                case 'win_announced':
+                    showWinnerNotification(message.winnerName, message.pattern, message.winAmount);
+                    break;
+                    
+                case 'game_state':
+                    updateGameState(message.state);
+                    break;
+                    
+                case 'error':
+                    showNotification(message.message, false);
+                    break;
+            }
+        }
+
+        function sendWebSocketMessage(type, data = {}) {
+            if (ws && ws.readyState === WebSocket.OPEN) {
+                ws.send(JSON.stringify({
+                    type,
+                    playerId,
+                    roomId: gameRoom,
+                    ...data
+                }));
+            }
+        }
+
+        function handleNumberCalled(number, displayText) {
+            gameState.calledNumbers.push(number);
+            
+            if (gameState.currentNumber) {
+                moveNumberToBar(gameState.currentNumber);
+            }
+            
+            gameState.currentNumber = displayText;
+            document.getElementById('currentNumberDisplay').textContent = displayText;
+            
+            // Check if this number is on our board
+            const cell = document.querySelector(`.board-cell[data-number="${number}"]`);
+            if (cell && !cell.classList.contains('marked')) {
+                toggleMark(cell, number);
+            }
+            
+            const audio = document.getElementById('callAudio');
+            audio.currentTime = 0;
+            audio.play().catch(() => {});
+        }
+
+        // Calculate potential win (80% of valid members * stake * 97%)
+        function calculatePotentialWin(stake) {
+            const validMembers = 90; // Always 90 members
+            const potential = (0.8 * validMembers * stake * 0.97);
+            return Math.floor(potential);
+        }
+
+        // Initialize
+        function init() {
+            connectWebSocket();
+            setupBoardSelection();
+            setupStakeOptions();
+            setupBoardNumbers();
+            generateMembers();
+            updatePotentialWin();
+            
+            document.getElementById('nextBtn').onclick = () => {
+                if (gameState.gameType) showPage(2);
+                else showNotification('እባክዎ የቦርድ ዓይነት ይምረጡ', false);
+            };
+            document.getElementById('confirmBtn').onclick = confirmRegistration;
+            document.getElementById('circularCallBtn').onclick = toggleCalling;
+            document.getElementById('playerStake').onchange = updatePotentialWin;
+            document.getElementById('paymentAmount').onchange = processPayment;
+            document.getElementById('announceBtn').onclick = announceWin;
+            
+            updateCalledNumbersDisplay();
+        }
+
+        // Setup Board Selection
+        function setupBoardSelection() {
+            const grid = document.getElementById('boardTypeGrid');
+            grid.innerHTML = '';
+            
+            boardTypes.forEach(type => {
+                const card = document.createElement('div');
+                card.className = 'board-type-card';
+                card.innerHTML = `
+                    <div class="board-type-icon">${type.icon}</div>
+                    <div class="board-type-title amharic-text">${type.name}</div>
+                    <div class="board-type-desc amharic-text">${type.desc}</div>
+                `;
+                card.onclick = () => {
+                    document.querySelectorAll('.board-type-card').forEach(c => c.classList.remove('selected'));
+                    card.classList.add('selected');
+                    gameState.gameType = type.id;
+                    if (type.id === 'pattern') {
+                        const patterns = gameState.winningPatterns.pattern;
+                        gameState.currentPattern = patterns[Math.floor(Math.random() * patterns.length)];
+                    }
+                };
+                
+                grid.appendChild(card);
+            });
+        }
+
+        // Setup Stake Options
+        function setupStakeOptions() {
+            const select = document.getElementById('playerStake');
+            const stakes = [25, 50, 100, 200, 500, 1000, 2000, 5000];
+            stakes.forEach(stake => {
+                const option = document.createElement('option');
+                option.value = stake;
+                option.textContent = `${stake} ብር`;
+                select.appendChild(option);
+            });
+            select.value = 25;
+            gameState.stake = 25;
+        }
+
+        // Setup Board Numbers
+        function setupBoardNumbers() {
+            const select = document.getElementById('boardSelect');
+            for (let i = 1; i <= 100; i++) {
+                const option = document.createElement('option');
+                option.value = i;
+                option.textContent = `ቦርድ ${i}`;
+                select.appendChild(option);
+            }
+            select.value = 1;
+        }
+
+        // Generate sample members
+        function generateMembers() {
+            const names = [
+                'መለስ ዜናዊ', 'አብይ አህመድ', 'ሳህለ ወልደ ማርያም', 'ደመቀ መኮንን',
+                'ተዋሕዶ ረዳ', 'ብርሃን ነጋ', 'ሙሉጌታ ገብረ ክርስቶስ', 'ፍቅር አለማየሁ'
+            ];
+            
+            const boardTypesList = ['75-ቢንጎ', '90-ቢንጎ', '30-ቢንጎ', '50-ቢንጎ', 'ንድፍ', 'ሙሉ ቤት'];
+            
+            gameState.members = [];
+            
+            for (let i = 1; i <= 90; i++) {
+                const name = names[Math.floor(Math.random() * names.length)];
+                const boardType = boardTypesList[Math.floor(Math.random() * boardTypesList.length)];
+                const boards = Math.floor(Math.random() * 5) + 1;
+                const paid = i <= 85;
+                const won = Math.random() > 0.9 && paid;
+                const stake = [25, 50, 100, 200, 500, 1000, 2000, 5000][Math.floor(Math.random() * 8)];
+                const payment = paid ? stake + Math.floor(Math.random() * 100) : 0;
+                const balance = payment + (won ? calculatePotentialWin(stake) * Math.random() : 0);
+                const withdrawn = Math.random() > 0.7 ? Math.floor(balance * 0.5) : 0;
+                
+                gameState.members.push({
+                    id: i,
+                    name: `${name} ${i}`,
+                    phone: `09${Math.floor(Math.random() * 90000000 + 10000000)}`,
+                    boardType: boardType,
+                    boards: boards,
+                    paid: paid,
+                    won: won,
+                    stake: stake,
+                    payment: payment,
+                    balance: balance,
+                    withdrawn: withdrawn
+                });
+            }
+            
+            gameState.members.sort((a, b) => b.payment - a.payment);
+        }
+
+        // Show Page
+        function showPage(pageNum) {
+            document.querySelectorAll('.page-container').forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById(`page${pageNum}`).classList.add('active');
+            
+            if (pageNum === 3) {
+                generateGameBoard();
+                startNewGame();
+            }
+            if (pageNum === 4) {
+                updateFinance();
+            }
+            if (pageNum === 5) {
+                showHelpTab('general');
+            }
+        }
+
+        // Show Help Tab
+        function showHelpTab(tabId) {
+            document.querySelectorAll('.help-nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelectorAll('.help-tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            document.querySelector(`.help-nav-btn[onclick="showHelpTab('${tabId}')"]`).classList.add('active');
+            document.getElementById(`help-${tabId}`).classList.add('active');
+        }
+
+        // Show Members Modal
+        function showMembers() {
+            const membersList = document.getElementById('membersList');
+            membersList.innerHTML = '';
+            
+            gameState.members.forEach(member => {
+                const row = document.createElement('tr');
+                row.className = 'member-row';
+                row.innerHTML = `
+                    <td>${member.id}</td>
+                    <td class="member-name">${member.name}</td>
+                    <td>${member.phone}</td>
+                    <td class="${member.paid ? 'member-paid' : 'member-not-paid'}">${member.paid ? '✓' : '✗'}</td>
+                    <td>${member.stake} ብር</td>
+                    <td>${Math.floor(member.balance)} ብር</td>
+                `;
+                membersList.appendChild(row);
+            });
+            
+            document.getElementById('membersModal').style.display = 'block';
+        }
+
+        // Show Potential Win Modal
+        function showPotentialWin() {
+            const tbody = document.getElementById('winningTableBody');
+            tbody.innerHTML = '';
+            
+            const stakes = [25, 50, 100, 200, 500, 1000, 2000, 5000];
+            stakes.forEach(stake => {
+                const winAmount = calculatePotentialWin(stake);
+                const row = document.createElement('tr');
+                row.className = stake === gameState.stake ? 'current-stake-row' : '';
+                row.innerHTML = `
+                    <td class="amharic-text">${stake} ብር</td>
+                    <td class="win-amount">${winAmount.toLocaleString()} ብር</td>
+                `;
+                tbody.appendChild(row);
+            });
+            
+            document.getElementById('potentialWinModal').style.display = 'block';
+        }
+
+        // Close Modal
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // Update Potential Win Display
+        function updatePotentialWin() {
+            const stake = parseInt(document.getElementById('playerStake').value) || 25;
+            const winAmount = calculatePotentialWin(stake);
+            
+            document.getElementById('currentWinDisplay').textContent = winAmount.toLocaleString();
+            gameState.stake = stake;
+        }
+
+        // Show Notification
+        function showNotification(message, showContinue) {
+            document.getElementById('notificationText').textContent = message;
+            document.getElementById('continueBtn').style.display = showContinue ? 'flex' : 'none';
+            document.getElementById('notification').style.display = 'block';
+        }
+
+        // Hide Notification
+        function hideNotification() {
+            document.getElementById('notification').style.display = 'none';
+        }
+
+        // Continue with incomplete information
+        function continueWithIncomplete() {
+            hideNotification();
+            gameState.playerName = document.getElementById('playerName').value || 'Guest';
+            gameState.playerPhone = document.getElementById('playerPhone').value || '0000000000';
+            gameState.stake = parseInt(document.getElementById('playerStake').value) || 25;
+            gameState.boardId = document.getElementById('boardSelect').value || 1;
+            showPage(3);
+        }
+
+        // Process Payment
+        function processPayment() {
+            const amount = parseInt(document.getElementById('paymentAmount').value);
+            
+            if (!amount || amount < 25) {
+                return;
+            }
+            
+            gameState.payment = amount;
+            gameState.paymentAmount = amount;
+            
+            const select = document.getElementById('paymentAmount');
+            select.style.background = '#28a745';
+            select.style.color = 'white';
+        }
+
+        // Confirm Registration
+        function confirmRegistration() {
+            const name = document.getElementById('playerName').value;
+            const phone = document.getElementById('playerPhone').value;
+            const stake = document.getElementById('playerStake').value;
+            const board = document.getElementById('boardSelect').value;
+            
+            const incomplete = !name || !phone || !stake || !board || gameState.payment === 0;
+            
+            if (incomplete) {
+                showNotification('መረጃዎች ሙሉ አይደሉም። በዚህ ሁኔታ መቀጠል ይፈልጋሉ?', true);
+                return;
+            }
+            
+            gameState.playerName = name;
+            gameState.playerPhone = phone;
+            gameState.stake = parseInt(stake);
+            gameState.boardId = board;
+            
+            // Send registration to server
+            sendWebSocketMessage('register_player', {
+                name: name,
+                phone: phone,
+                stake: stake,
+                boardId: board,
+                gameType: gameState.gameType,
+                payment: gameState.payment
+            });
+            
+            // Add to local members
+            const existing = gameState.members.find(m => m.phone === phone);
+            if (!existing) {
+                const boardTypeName = boardTypes.find(t => t.id === gameState.gameType)?.name || '75-ቢንጎ';
+                gameState.members.unshift({
+                    id: gameState.members.length + 1,
+                    name: name,
+                    phone: phone,
+                    boardType: boardTypeName,
+                    boards: 1,
+                    paid: true,
+                    won: false,
+                    stake: gameState.stake,
+                    payment: gameState.payment,
+                    balance: gameState.payment,
+                    withdrawn: 0
+                });
+            }
+            
+            showPage(3);
+        }
+
+        // Generate Game Board
+        function generateGameBoard() {
+            const board = document.getElementById('gameBoard');
+            const header = document.getElementById('gameHeader');
+            const type = boardTypes.find(t => t.id === gameState.gameType);
+            
+            board.innerHTML = '';
+            header.textContent = `${type.name} - ቦርድ ${gameState.boardId}`;
+            
+            if (gameState.gameType === '75ball' || gameState.gameType === '50ball') {
+                generateBingoBoard(type);
+            } else if (gameState.gameType === '90ball') {
+                generate90BallBoard(type);
+            } else if (gameState.gameType === '30ball') {
+                generate30BallBoard(type);
+            } else if (gameState.gameType === 'pattern') {
+                generatePatternBoard(type);
+            } else if (gameState.gameType === 'coverall') {
+                generateCoverallBoard(type);
+            }
+        }
+
+        // Generate BINGO Board (75/50 ball)
+        function generateBingoBoard(type) {
+            const board = document.getElementById('gameBoard');
+            const wrapper = document.createElement('div');
+            wrapper.className = 'board-75-wrapper';
+            
+            // BINGO Labels
+            const labels = document.createElement('div');
+            labels.className = 'bingo-labels';
+            'BINGO'.split('').forEach(letter => {
+                const label = document.createElement('div');
+                label.className = 'bingo-label';
+                label.textContent = letter;
+                labels.appendChild(label);
+            });
+            wrapper.appendChild(labels);
+            
+            // Board Grid
+            const grid = document.createElement('div');
+            grid.className = type.id === '75ball' ? 'board-75' : 'board-50';
+            
+            const columnRanges = type.id === '75ball' ? 
+                [[1,15], [16,30], [31,45], [46,60], [61,75]] :
+                [[1,10], [11,20], [21,30], [31,40], [41,50]];
+            
+            const columnNumbers = columnRanges.map(range => {
+                let nums = new Set();
+                while (nums.size < 5) {
+                    nums.add(Math.floor(Math.random() * (range[1] - range[0] + 1)) + range[0]);
+                }
+                return Array.from(nums).sort((a, b) => a - b);
+            });
+            
+            for (let row = 0; row < 5; row++) {
+                for (let col = 0; col < 5; col++) {
+                    const cell = document.createElement('button');
+                    cell.className = 'board-cell';
+                    
+                    if (row === 2 && col === 2) {
+                        cell.textContent = '★';
+                        cell.classList.add('center-cell');
+                        cell.dataset.center = 'true';
+                        cell.onclick = () => {
+                            // Center cell is just a free space, mark it automatically
+                            if (!cell.classList.contains('marked')) {
+                                cell.classList.add('marked');
+                            }
+                        };
+                    } else {
+                        const num = columnNumbers[col][row];
+                        cell.textContent = num;
+                        cell.dataset.number = num;
+                        cell.dataset.row = row;
+                        cell.dataset.column = col;
+                        cell.onclick = () => toggleMark(cell, num);
+                    }
+                    
+                    grid.appendChild(cell);
+                }
+            }
+            
+            wrapper.appendChild(grid);
+            board.appendChild(wrapper);
+        }
+
+        // Generate 90 Ball Board
+        function generate90BallBoard(type) {
+            const board = document.getElementById('gameBoard');
+            const wrapper = document.createElement('div');
+            wrapper.className = 'board-90-wrapper';
+            
+            // Column labels
+            const labels = document.createElement('div');
+            labels.className = 'board-90-labels';
+            for (let i = 1; i <= 9; i++) {
+                const label = document.createElement('div');
+                label.className = 'board-90-label';
+                label.textContent = `${(i-1)*10+1}-${i*10}`;
+                labels.appendChild(label);
+            }
+            wrapper.appendChild(labels);
+            
+            // Board Grid
+            const grid = document.createElement('div');
+            grid.className = 'board-90';
+            
+            const ranges = [
+                [1,10], [11,20], [21,30], [31,40], [41,50],
+                [51,60], [61,70], [71,80], [81,90]
+            ];
+            
+            const columnNumbers = ranges.map(range => {
+                const count = Math.floor(Math.random() * 3) + 1;
+                let nums = new Set();
+                while (nums.size < count) {
+                    nums.add(Math.floor(Math.random() * (range[1] - range[0] + 1)) + range[0]);
+                }
+                return Array.from(nums).sort((a, b) => a - b);
+            });
+            
+            const layout = Array(3).fill().map(() => Array(9).fill(null));
+            
+            columnNumbers.forEach((nums, col) => {
+                const positions = [0,1,2].sort(() => Math.random() - 0.5).slice(0, nums.length);
+                positions.forEach((row, idx) => {
+                    layout[row][col] = nums[idx];
+                });
+            });
+            
+            for (let row = 0; row < 3; row++) {
+                for (let col = 0; col < 9; col++) {
+                    const cell = document.createElement('button');
+                    cell.className = 'board-cell';
+                    const num = layout[row][col];
+                    
+                    if (num) {
+                        cell.textContent = num;
+                        cell.dataset.number = num;
+                        cell.dataset.row = row;
+                        cell.dataset.column = col;
+                        
+                        // Center cell (row 2, column 4)
+                        if (row === 1 && col === 4) {
+                            cell.classList.add('center-cell');
+                            cell.dataset.center = 'true';
+                        }
+                        
+                        cell.onclick = () => toggleMark(cell, num);
+                    } else {
+                        cell.classList.add('blank-cell');
+                        cell.textContent = '✗';
+                    }
+                    
+                    grid.appendChild(cell);
+                }
+            }
+            
+            wrapper.appendChild(grid);
+            board.appendChild(wrapper);
+        }
+
+        // Generate 30 Ball Board
+        function generate30BallBoard(type) {
+            const board = document.getElementById('gameBoard');
+            const wrapper = document.createElement('div');
+            wrapper.className = 'board-30-wrapper';
+            
+            // Column labels
+            const labels = document.createElement('div');
+            labels.className = 'board-30-labels';
+            for (let i = 1; i <= 3; i++) {
+                const label = document.createElement('div');
+                label.className = 'board-30-label';
+                label.textContent = `${(i-1)*10+1}-${i*10}`;
+                labels.appendChild(label);
+            }
+            wrapper.appendChild(labels);
+            
+            // Board Grid
+            const grid = document.createElement('div');
+            grid.className = 'board-30';
+            
+            let nums = new Set();
+            while (nums.size < 9) {
+                nums.add(Math.floor(Math.random() * 30) + 1);
+            }
+            const numbers = Array.from(nums).sort((a, b) => a - b);
+            
+            for (let i = 0; i < 9; i++) {
+                const cell = document.createElement('button');
+                cell.className = 'board-cell';
+                cell.textContent = numbers[i];
+                cell.dataset.number = numbers[i];
+                cell.dataset.index = i;
+                
+                // Center cell (index 4)
+                if (i === 4) {
+                    cell.classList.add('center-cell');
+                    cell.dataset.center = 'true';
+                }
+                
+                cell.onclick = () => toggleMark(cell, numbers[i]);
+                
+                grid.appendChild(cell);
+            }
+            
+            wrapper.appendChild(grid);
+            board.appendChild(wrapper);
+        }
+
+        // Generate Pattern Board
+        function generatePatternBoard(type) {
+            const board = document.getElementById('gameBoard');
+            const wrapper = document.createElement('div');
+            wrapper.className = 'board-pattern-wrapper';
+            
+            // BINGO Labels
+            const labels = document.createElement('div');
+            labels.className = 'board-pattern-labels';
+            'BINGO'.split('').forEach(letter => {
+                const label = document.createElement('div');
+                label.className = 'board-pattern-label';
+                label.textContent = letter;
+                labels.appendChild(label);
+            });
+            wrapper.appendChild(labels);
+            
+            // Board Grid
+            const grid = document.createElement('div');
+            grid.className = 'board-pattern';
+            
+            const columnRanges = [[1,15], [16,30], [31,45], [46,60], [61,75]];
+            const columnNumbers = columnRanges.map(range => {
+                let nums = new Set();
+                while (nums.size < 5) {
+                    nums.add(Math.floor(Math.random() * (range[1] - range[0] + 1)) + range[0]);
+                }
+                return Array.from(nums).sort((a, b) => a - b);
+            });
+            
+            // Define pattern cells
+            const patternCells = getPatternCells(gameState.currentPattern);
+            
+            for (let row = 0; row < 5; row++) {
+                for (let col = 0; col < 5; col++) {
+                    const cell = document.createElement('button');
+                    cell.className = 'board-cell';
+                    
+                    if (row === 2 && col === 2) {
+                        cell.textContent = '★';
+                        cell.classList.add('center-cell');
+                        cell.dataset.center = 'true';
+                        cell.onclick = () => {
+                            // Center cell is just a free space, mark it automatically
+                            if (!cell.classList.contains('marked')) {
+                                cell.classList.add('marked');
+                            }
+                        };
+                    } else {
+                        const num = columnNumbers[col][row];
+                        cell.textContent = num;
+                        cell.dataset.number = num;
+                        cell.dataset.row = row;
+                        cell.dataset.column = col;
+                        
+                        if (patternCells.includes(`${row}-${col}`)) {
+                            cell.classList.add('pattern-cell');
+                        }
+                        
+                        cell.onclick = () => toggleMark(cell, num);
+                    }
+                    
+                    grid.appendChild(cell);
+                }
+            }
+            
+            wrapper.appendChild(grid);
+            board.appendChild(wrapper);
+        }
+
+        // Generate Coverall Board
+        function generateCoverallBoard(type) {
+            const board = document.getElementById('gameBoard');
+            const wrapper = document.createElement('div');
+            wrapper.className = 'board-coverall-wrapper';
+            
+            // Column labels
+            const labels = document.createElement('div');
+            labels.className = 'board-coverall-labels';
+            for (let i = 1; i <= 9; i++) {
+                const label = document.createElement('div');
+                label.className = 'board-coverall-label';
+                label.textContent = `${(i-1)*10+1}-${i*10}`;
+                labels.appendChild(label);
+            }
+            wrapper.appendChild(labels);
+            
+            // Board Grid
+            const grid = document.createElement('div');
+            grid.className = 'board-coverall';
+            
+            let allNumbers = Array.from({length: 90}, (_, i) => i + 1);
+            allNumbers = shuffleArray(allNumbers).slice(0, 45);
+            
+            for (let i = 0; i < 45; i++) {
+                const row = Math.floor(i / 9);
+                const col = i % 9;
+                const cell = document.createElement('button');
+                cell.className = 'board-cell';
+                cell.textContent = allNumbers[i];
+                cell.dataset.number = allNumbers[i];
+                cell.dataset.index = i;
+                
+                // Center cell (row 2, column 4)
+                if (row === 2 && col === 4) {
+                    cell.classList.add('center-cell');
+                    cell.dataset.center = 'true';
+                }
+                
+                cell.onclick = () => toggleMark(cell, allNumbers[i]);
+                
+                grid.appendChild(cell);
+            }
+            
+            wrapper.appendChild(grid);
+            board.appendChild(wrapper);
+        }
+
+        // Get pattern cells
+        function getPatternCells(pattern) {
+            const patterns = {
+                'x-pattern': ['0-0', '0-4', '1-1', '1-3', '2-2', '3-1', '3-3', '4-0', '4-4'],
+                'frame': ['0-0', '0-1', '0-2', '0-3', '0-4', '4-0', '4-1', '4-2', '4-3', '4-4', '1-0', '2-0', '3-0', '1-4', '2-4', '3-4'],
+                'postage-stamp': ['0-0', '0-1', '1-0', '1-1', '3-3', '3-4', '4-3', '4-4'],
+                'small-diamond': ['1-2', '2-1', '2-2', '2-3', '3-2']
+            };
+            return patterns[pattern] || patterns['x-pattern'];
+        }
+
+        // Shuffle array
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // Toggle Mark
+        function toggleMark(cell, number) {
+            if (!gameState.gameActive) return;
+            
+            if (cell.classList.contains('marked')) {
+                cell.classList.remove('marked');
+                gameState.markedNumbers.delete(number);
+            } else {
+                cell.classList.add('marked');
+                gameState.markedNumbers.add(number);
+                sendWebSocketMessage('mark_number', { number });
+            }
+        }
+
+        // Start New Game
+        function startNewGame() {
+            gameState.gameActive = true;
+            gameState.calledNumbers = [];
+            gameState.calledNumbersDisplay = [];
+            gameState.markedNumbers.clear();
+            gameState.currentNumber = null;
+            
+            // Reset circular call button
+            document.getElementById('currentNumberDisplay').textContent = '';
+            document.getElementById('circularCallBtn').classList.remove('calling');
+            
+            updateCalledNumbersDisplay();
+            
+            stopCalling();
+            
+            // Request game state from server
+            sendWebSocketMessage('get_game_state');
+        }
+
+        // Start Auto Calling
+        function startAutoCalling() {
+            gameState.isCalling = true;
+            const btn = document.getElementById('circularCallBtn');
+            btn.classList.add('calling');
+            
+            // Server now controls number calling
+            sendWebSocketMessage('start_calling');
+        }
+
+        // Toggle Calling
+        function toggleCalling() {
+            const btn = document.getElementById('circularCallBtn');
+            
+            if (gameState.isCalling) {
+                stopCalling();
+                btn.classList.remove('calling');
+            } else {
+                startAutoCalling();
+            }
+        }
+
+        // Stop Calling
+        function stopCalling() {
+            gameState.isCalling = false;
+            if (gameState.callInterval) {
+                clearInterval(gameState.callInterval);
+                gameState.callInterval = null;
+            }
+            sendWebSocketMessage('stop_calling');
+        }
+
+        // Move number from circular button to bar
+        function moveNumberToBar(number) {
+            gameState.calledNumbersDisplay.unshift(number);
+            if (gameState.calledNumbersDisplay.length > gameState.maxDisplayNumbers) {
+                gameState.calledNumbersDisplay.pop();
+            }
+            
+            updateCalledNumbersDisplay();
+        }
+
+        // Update Called Numbers Display
+        function updateCalledNumbersDisplay() {
+            const bar = document.getElementById('calledNumbersBar');
+            bar.innerHTML = '';
+            
+            gameState.calledNumbersDisplay.forEach(num => {
+                const span = document.createElement('span');
+                span.className = 'called-number amharic-text';
+                span.textContent = num;
+                bar.appendChild(span);
+            });
+            
+            if (gameState.calledNumbersDisplay.length === 0) {
+                bar.innerHTML = '<span style="color: #888; font-style: italic;" class="amharic-text">ቁጥሮች ይጠራሉ...</span>';
+            }
+        }
+
+        // Announce Win (Player clicks the "I'm Winner!" button)
+        function announceWin() {
+            if (!gameState.gameActive) return;
+            
+            const win = calculateWin();
+            if (win) {
+                const winAmount = calculatePotentialWin(gameState.stake);
+                gameState.totalWon += winAmount;
+                
+                // Send win announcement to server
+                sendWebSocketMessage('announce_win', {
+                    pattern: win.pattern,
+                    winAmount: winAmount
+                });
+                
+                document.getElementById('winnerName').textContent = gameState.playerName;
+                document.getElementById('winPattern').textContent = gameState.winConditions[win.pattern] || win.pattern;
+                document.getElementById('displayWinAmount').textContent = `${winAmount.toLocaleString()} ብር`;
+                document.getElementById('winnerNotification').style.display = 'block';
+                
+                const audio = document.getElementById('winAudio');
+                audio.currentTime = 0;
+                audio.play().catch(() => {});
+                
+                stopCalling();
+            } else {
+                showNotification('አሸናፊ ንድፍ አልተጠናቀቀም። እባክዎ ይቆጥሩ!', false);
+            }
+        }
+
+        // Calculate Win
+        function calculateWin() {
+            const type = gameState.gameType;
+            const patterns = gameState.winningPatterns[type];
+            
+            for (const pattern of patterns) {
+                if (checkPattern(pattern)) {
+                    return { pattern: pattern };
+                }
+            }
+            
+            return null;
+        }
+
+        // Check Specific Pattern
+        function checkPattern(pattern) {
+            const cells = document.querySelectorAll('.board-cell:not(.blank-cell)');
+            const markedCells = Array.from(cells).filter(cell => 
+                cell.classList.contains('marked') || 
+                (cell.classList.contains('center-cell') && 
+                 (gameState.gameType === '75ball' || gameState.gameType === '50ball' || gameState.gameType === 'pattern'))
+            );
+            
+            const markedPositions = new Set();
+            markedCells.forEach(cell => {
+                if (cell.dataset.row !== undefined && cell.dataset.column !== undefined) {
+                    markedPositions.add(`${cell.dataset.row}-${cell.dataset.column}`);
+                } else if (cell.dataset.index !== undefined) {
+                    markedPositions.add(`i${cell.dataset.index}`);
+                }
+            });
+            
+            switch(gameState.gameType) {
+                case '75ball':
+                case '50ball':
+                    return check75BallPattern(pattern, markedPositions);
+                case '90ball':
+                    return check90BallPattern(pattern, markedPositions);
+                case '30ball':
+                    return check30BallPattern(pattern, markedPositions);
+                case 'pattern':
+                    return checkPatternBingo(pattern, markedPositions);
+                case 'coverall':
+                    return checkCoverallPattern(pattern, markedPositions);
+                default:
+                    return false;
+            }
+        }
+
+        // Check 75-Ball Patterns
+        function check75BallPattern(pattern, markedPositions) {
+            switch(pattern) {
+                case 'row':
+                    for (let row = 0; row < 5; row++) {
+                        let complete = true;
+                        for (let col = 0; col < 5; col++) {
+                            const pos = `${row}-${col}`;
+                            if (row === 2 && col === 2) continue;
+                            if (!markedPositions.has(pos)) {
+                                complete = false;
+                                break;
+                            }
+                        }
+                        if (complete) return true;
+                    }
+                    return false;
+                    
+                case 'column':
+                    for (let col = 0; col < 5; col++) {
+                        let complete = true;
+                        for (let row = 0; row < 5; row++) {
+                            const pos = `${row}-${col}`;
+                            if (row === 2 && col === 2) continue;
+                            if (!markedPositions.has(pos)) {
+                                complete = false;
+                                break;
+                            }
+                        }
+                        if (complete) return true;
+                    }
+                    return false;
+                    
+                case 'diagonal':
+                    let diag1Complete = true;
+                    for (let i = 0; i < 5; i++) {
+                        const pos = `${i}-${i}`;
+                        if (i === 2) continue;
+                        if (!markedPositions.has(pos)) {
+                            diag1Complete = false;
+                            break;
+                        }
+                    }
+                    if (diag1Complete) return true;
+                    
+                    let diag2Complete = true;
+                    for (let i = 0; i < 5; i++) {
+                        const pos = `${i}-${4-i}`;
+                        if (i === 2) continue;
+                        if (!markedPositions.has(pos)) {
+                            diag2Complete = false;
+                            break;
+                        }
+                    }
+                    return diag2Complete;
+                    
+                case 'four-corners':
+                    const corners = ['0-0', '0-4', '4-0', '4-4'];
+                    return corners.every(pos => markedPositions.has(pos));
+                    
+                case 'full-house':
+                    for (let row = 0; row < 5; row++) {
+                        for (let col = 0; col < 5; col++) {
+                            if (row === 2 && col === 2) continue;
+                            const pos = `${row}-${col}`;
+                            if (!markedPositions.has(pos)) {
+                                return false;
+                            }
+                        }
+                    }
+                    return true;
+                    
+                default:
+                    return false;
+            }
+        }
+
+        // Check 90-Ball Patterns
+        function check90BallPattern(pattern, markedPositions) {
+            const rowCounts = [0, 0, 0];
+            const totalCells = 15;
+            
+            const markedCells = Array.from(document.querySelectorAll('.board-cell:not(.blank-cell)')).filter(cell => 
+                cell.classList.contains('marked')
+            );
+            
+            markedCells.forEach(cell => {
+                if (cell.dataset.row !== undefined) {
+                    const row = parseInt(cell.dataset.row);
+                    if (row >= 0 && row < 3) {
+                        rowCounts[row]++;
+                    }
+                }
+            });
+            
+            switch(pattern) {
+                case 'one-line':
+                    return rowCounts.some(count => count >= 5);
+                    
+                case 'two-lines':
+                    const rowsWithAllNumbers = rowCounts.filter(count => count >= 5);
+                    return rowsWithAllNumbers.length >= 2;
+                    
+                case 'full-house':
+                    return markedCells.length >= totalCells;
+                    
+                default:
+                    return false;
+            }
+        }
+
+        // Check 30-Ball Pattern
+        function check30BallPattern(pattern, markedPositions) {
+            if (pattern === 'full-house') {
+                return markedPositions.size >= 9;
+            }
+            return false;
+        }
+
+        // Check Pattern Bingo
+        function checkPatternBingo(pattern, markedPositions) {
+            const patternCells = getPatternCells(pattern);
+            return patternCells.every(pos => markedPositions.has(pos));
+        }
+
+        // Check Coverall Pattern
+        function checkCoverallPattern(pattern, markedPositions) {
+            if (pattern === 'full-board') {
+                return markedPositions.size >= 45;
+            }
+            return false;
+        }
+
+        // Show Winner Notification
+        function showWinnerNotification(winnerName, pattern, winAmount) {
+            document.getElementById('winnerName').textContent = winnerName;
+            document.getElementById('winPattern').textContent = gameState.winConditions[pattern] || pattern;
+            document.getElementById('displayWinAmount').textContent = `${winAmount.toLocaleString()} ብር`;
+            document.getElementById('winnerNotification').style.display = 'block';
+            
+            const audio = document.getElementById('winAudio');
+            audio.currentTime = 0;
+            audio.play().catch(() => {});
+        }
+
+        // Continue Game
+        function continueGame() {
+            document.getElementById('winnerNotification').style.display = 'none';
+            startNewGame();
+        }
+
+        // Update Finance
+        function updateFinance() {
+            const balance = gameState.payment + gameState.totalWon - gameState.totalWithdrawn;
+            const withdraw = Math.floor(balance * 0.97);
+            
+            document.getElementById('totalPayment').value = `${gameState.payment} ብር`;
+            document.getElementById('totalWon').value = `${gameState.totalWon.toLocaleString()} ብር`;
+            document.getElementById('currentBalance').value = `${balance.toLocaleString()} ብር`;
+            document.getElementById('withdrawAmount').value = `${withdraw.toLocaleString()} ብር`;
+        }
+
+        // Process Withdrawal
+        function processWithdrawal() {
+            const account = document.getElementById('withdrawAccount').value;
+            const amount = parseInt(document.getElementById('withdrawAmount').value.replace(/,/g, ''));
+            
+            if (!account) {
+                showNotification('የአካውንት ቁጥር ያስገቡ', false);
+                return;
+            }
+            
+            if (amount < 25) {
+                showNotification('ዝቅተኛ መጠን 25 ብር', false);
+                return;
+            }
+            
+            const balance = gameState.payment + gameState.totalWon - gameState.totalWithdrawn;
+            if (amount > balance) {
+                showNotification('በቂ ሚዛን የለም', false);
+                return;
+            }
+            
+            gameState.totalWithdrawn += amount;
+            updateFinance();
+            
+            // Send withdrawal request to server
+            sendWebSocketMessage('withdraw', {
+                account: account,
+                amount: amount
+            });
+            
+            showNotification(`${amount.toLocaleString()} ብር በተሳካ ሁኔታ ተወግዷል!`, false);
+        }
+
+        // Update Player List
+        function updatePlayerList(players) {
+            // Update the members list with real-time data
+            // This would be called when server sends updated player list
+        }
+
+        // Update Game State
+        function updateGameState(state) {
+            // Update game state from server
+            gameState.calledNumbers = state.calledNumbers || [];
+            gameState.gameActive = state.gameActive || false;
+            gameState.isCalling = state.isCalling || false;
+            
+            // Update UI based on game state
+            if (state.currentNumber) {
+                document.getElementById('currentNumberDisplay').textContent = state.currentNumber;
+            }
+            
+            if (state.isCalling) {
+                document.getElementById('circularCallBtn').classList.add('calling');
+            } else {
+                document.getElementById('circularCallBtn').classList.remove('calling');
+            }
+        }
+
+        // Initialize on load
+        window.addEventListener('DOMContentLoaded', init);
+        
+        // Mobile compatibility
+        document.addEventListener('touchstart', (e) => {
+            if (e.touches.length > 1) e.preventDefault();
+        }, { passive: false });
+        
+        document.addEventListener('gesturestart', (e) => e.preventDefault());
+        document.addEventListener('contextmenu', (e) => e.preventDefault());
+        
+        // Handle orientation change
+        window.addEventListener('orientationchange', () => {
+            setTimeout(() => {
+                window.scrollTo(0, 0);
+                if (gameState.gameType) {
+                    generateGameBoard();
+                }
+            }, 100);
+        });
+        
+        // Close modals when clicking outside
+        window.addEventListener('click', (e) => {
+            const membersModal = document.getElementById('membersModal');
+            const potentialWinModal = document.getElementById('potentialWinModal');
+            
+            if (e.target === membersModal) {
+                membersModal.style.display = 'none';
+            }
+            if (e.target === potentialWinModal) {
+                potentialWinModal.style.display = 'none';
+            }
+        });
+        
+        // Ensure boards fit on resize
+        let resizeTimer;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(() => {
+                if (gameState.gameType) {
+                    generateGameBoard();
+                }
+            }, 250);
+        });
+    </script>
+</body>
+</html>
